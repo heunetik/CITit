@@ -49,7 +49,7 @@ switch ($registry->requestAction)
 			$data = ['content' => $_POST['content']];
 			$articleModel->addArticleToDatabase($data, $id);
 			$baseUrl = $registry->configuration->website->params->url;
-			header('Location:'.$baseUrl.'/admin/article/list');
+			header('Location:' . $baseUrl . '/admin/article/list');
 			exit;
 		}
 		$articleView->showSingleArticle('edit_article', $articleData);
