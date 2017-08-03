@@ -39,7 +39,20 @@ switch ($registry->requestAction)
 			$data = ['content' => $_POST['content']];
 			$articleModel->addArticleToDatabase($data);
 		}
-		$articleView->useTemplate('edit');
+		$articleView->useTemplate('add_article');
+		break;
+	case 'edit':
+		$id = $registry->request['id'];
+		$articleData = $articleModel->getArticleById($registry->request['id']);
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
+			// Zend_Debug::dump($_POST);
+			$data = ['content' => $_POST['content']];
+			$articleModel->addArticleToDatabase($data, $id);
+			$baseUrl = $registry->configuration->website->params->url;
+			header('Location:'.$baseUrl.'/admin/article/list');
+			exit;
+		}
+		$articleView->showSingleArticle('edit_article', $articleData);
 		break;
 	case 'delete':
 		break;
@@ -48,7 +61,5 @@ switch ($registry->requestAction)
 		$articleData = $articleModel->getArticleById($registry->request['id']);
 		// Zend_Debug::dump($articleData);exit;
 		$articleView->showSingleArticle('show_article_content', $articleData);
-		break;
-	case 'edit':
 		break;
 }

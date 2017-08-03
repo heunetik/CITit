@@ -42,7 +42,7 @@ function deleteArticle(id)
                 <td>
                     <table class="action_table">
                         <tr>
-                            <td width="20%"><a href="{SITE_URL}/admin/user/update/id/{ID}/" title="Edit/Update" class="edit_state">Edit</a></td>
+                            <td width="20%"><a href="{SITE_URL}/admin/article/edit/id/{ARTICLE_ID}" title="Edit/Update" class="edit_state">Edit</a></td>
                             <td width="25%"><a href="" class="delete_state deleteArticle deleteButton_{ARTICLE_ID}" onclick="deleteArticle({ARTICLE_ID})" title="Delete">Delete</a></td>
                             </tr>
                     </table>

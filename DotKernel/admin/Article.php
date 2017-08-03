@@ -70,9 +70,14 @@ class Article extends Dot_Model_User
 
         return $result;
     }
-	public function addArticleToDatabase($data)
+	public function addArticleToDatabase($data, $id = "")
 	{
-		$select = $this->db->insert('article', $data);
+		// $select = $this->db->insert('article', $data);
+        if($id != "") {
+            $select = $this->db->update('article', $data, "id = " . $id);
+        } else {
+            $select = $this->db->insert('article', $data);
+        }
 	}
 	public function deleteArticleById($id)
     {
