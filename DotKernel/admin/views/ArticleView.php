@@ -25,6 +25,8 @@ class Article_View extends View
         $this->settings = Zend_Registry::get('settings');
         $this->session = Zend_Registry::get('session');
     }
+
+    // Displays a list of all the articles
     public function listArticles($template = '', $data, $page)
     {
         if($template != '') {
@@ -45,6 +47,8 @@ class Article_View extends View
             $this->tpl->parse('article_list_block','article_list',true);
         }
     }
+
+    // Displays one single article, and all of it's $data
     public function showSingleArticle($template = '', $data)
     {
         // Zend_debug::dump($data);die;
@@ -57,6 +61,8 @@ class Article_View extends View
             $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
         }
     }
+
+    // Selects the template to be used
     public function useTemplate($template = '')
     {
         if($template != '') {
