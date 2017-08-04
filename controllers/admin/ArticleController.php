@@ -23,7 +23,6 @@ switch ($registry->requestAction)
 {
 	default:
 	case 'list':
-		// Zend_Debug::dump($registry->request['page']);exit;
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$data = $_POST['id'];
 			$articleModel->deleteArticleById($data);
@@ -31,11 +30,9 @@ switch ($registry->requestAction)
 		$page = (isset($registry->request['page']) && $registry->request['page'] > 0) ? $registry->request['page'] : 1;
 		$list = $articleModel->getArticleList($page);
 		$articleView->listArticles('list', $list, $page);
-		// Zend_Debug::dump($list);exit;
 		break;
 	case 'add':
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
-			// Zend_Debug::dump($_POST);
 			$data = ['content' => $_POST['content']];
 			$articleModel->addArticleToDatabase($data);
 		}
@@ -45,11 +42,10 @@ switch ($registry->requestAction)
 		$id = $registry->request['id'];
 		$articleData = $articleModel->getArticleById($registry->request['id']);
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
-			// Zend_Debug::dump($_POST);
 			$data = ['content' => $_POST['content']];
 			$articleModel->addArticleToDatabase($data, $id);
 			$baseUrl = $registry->configuration->website->params->url;
-			header('Location:'.$baseUrl.'/admin/article/list');
+			header('Location:' . $baseUrl . '/admin/article/list');
 			exit;
 		}
 		$articleView->showSingleArticle('edit_article', $articleData);
@@ -57,9 +53,7 @@ switch ($registry->requestAction)
 	case 'delete':
 		break;
 	case 'show':
-		// Zend_Debug::dump($registry->request['id']);die;
 		$articleData = $articleModel->getArticleById($registry->request['id']);
-		// Zend_Debug::dump($articleData);exit;
 		$articleView->showSingleArticle('show_article_content', $articleData);
 		break;
 }

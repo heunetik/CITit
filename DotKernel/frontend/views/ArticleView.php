@@ -32,6 +32,11 @@ class Article_View extends View
 		$this->session = Zend_Registry::get('session');
 	}
 
+    /*
+    Displays every article contained in $data
+    on the specified template.
+    (handled as a "$separateArticle", and parsed as one)
+    */
 	public function showArticles($template = '', $data)
     {
         if($template != '') {
@@ -47,24 +52,60 @@ class Article_View extends View
         }
         $this->tpl->setVar('ARTICLE_COUNT', count($data));
     }
-    public function showSingleArticle($template = '', $data)
+
+    /*
+    Displays one single article, with all of it's data
+    on the specified template.
+    Also displays the comment submission form, given
+    that the user is signed in.
+    */
+    public function showSingleArticle($template = '', $data, $commentData)
     {
-        // Zend_debug::dump($data);die;
         if($template != '') {
             $this->template = $template;
         }
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
+        $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
+        $this->tpl->setBlock('comment_display','comment_reply','comment_reply_block');
+
+
         foreach($data as $key => $value) {
-            //echo 'ARTICLE_'.strtoupper($key)." - ".$value."<br>";
             $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
         }
-        // Zend_Debug::dump($this->session->userData);
-        $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
 
-        if($this->session->user) {
-            $this->tpl->parse('comment_display_block','comment_display', true);
-        } else {
-            $this->tpl->parse('comment_display_block','');
+        foreach ($commentData as $commentKey => $comment) {
+            $this->tpl->setVar('COMMENT_USERID',$comment['username']);
+            $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
+            // we emplty the block before we make any changes, 
+            // just in case this block was already set in a previous loop from the foreach
+            $this->tpl->parse('comment_reply_block','');
+            if(isset($comment['replies'])) {
+                foreach($comment['replies'] as $replyKey => $reply) {
+                    $this->tpl->setVar('REPLY_USERNAME',$reply['username']);
+                    $this->tpl->setVar('REPLY_CONTENT',$reply['content']);
+                    $this->tpl->parse('comment_reply_block','comment_reply',true);
+                }
+            }
+            $this->tpl->parse('comment_display_block','comment_display',true);
+        }
+    }
+
+    /*
+    Displays all the comments on the article.
+    */
+    public function showArticleComments($template = '', $data)
+    {
+        if($template != '') {
+            $this->template = $template;
+        }
+        $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
+        var_dump($this->template);
+        $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
+        foreach ($data as $separateComment) {
+            foreach($separateComment as $key => $value) {
+                $this->tpl->setVar('COMMENT_'.strtoupper($key), $value);
+            }
+            $this->tpl->parse('comment_display_block','comment_display',true);
         }
     }
 }

@@ -47,7 +47,6 @@ class Article extends Dot_Model_User
 	{
 		$select = $this->db->select()
 						->from('article');
-						// ->where('id = ?', $id);
 		return $this->db->fetchAll($select);
 	}
 	public function getSingleArticleData($id)
@@ -56,5 +55,51 @@ class Article extends Dot_Model_User
 						->from('article')
 						->where('id = ?', $id);
 		return $this->db->fetchRow($select);
+	}
+	public function getCommentByArticleId($id)
+	{
+		$comepletedData = [];
+		$comments = $this->getComments($id);
+
+		foreach ($comments as $key => $value) {
+			$replies = $this->getCommentReplytByCommentId($value['id']);
+			$comepletedData[$value['id']]['content'] = $value['content'];
+			$comepletedData[$value['id']]['username'] = $value['username'];
+			if(isset($replies) && !empty($replies))
+			{
+				$comepletedData[$value['id']]['replies'] = $replies;
+			}
+		}
+		return $comepletedData;
+	}
+
+
+	/**
+	* get comments that have parrent id 0
+	*/
+	public function getComments($id)
+	{
+		$defaultParentId = 0;
+	    $select = $this->db->select()
+	                    ->from('comment')
+	                    ->where('postId = ?', $id)
+	                    ->where('parent = ?', $defaultParentId)
+	                    ->join('user','user.id = comment.userId','user.username');
+	    $result = $this->db->fetchAll($select);
+	    
+	    return $result;
+	}
+
+	/**
+	* get coment reply by coment id
+	*/
+	public function getCommentReplytByCommentId($id)
+	{
+		$select = $this->db->select()
+	                    ->from('comment',array('content','date'))
+	                    ->where('parent = ?', $id)
+	                    ->join('user','user.id = comment.userId','username');
+	    $result = $this->db->fetchAll($select);
+	    return $result;          
 	}
 }

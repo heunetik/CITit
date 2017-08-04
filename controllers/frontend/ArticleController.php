@@ -29,7 +29,7 @@ switch ($registry->requestAction)
 	case 'show_article_content':
 		// var_dump($registry->request);exit;
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
-		// var_dump($articleData);exit;
-		$articleView->showSingleArticle('show_article_content', $articleData);
+		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
+		$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply);
 		break;
 }

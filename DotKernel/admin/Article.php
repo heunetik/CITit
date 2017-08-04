@@ -37,22 +37,18 @@ class Article extends Dot_Model_User
 		$this->_httpReferer = (!is_null($httpReferer)) ? $httpReferer : '';
 	}
 
-	/**
-	 * Get user info
-	 * @access public
-	 * @param int $id
-	 * @return array
-	 */
+    // Get all article data, and return it paginated
 	public function getArticleList($page)
 	{
 		$select = $this->db->select()
 						->from('article');
-						// ->where('id = ?', $id);
 		// return $this->db->fetchAll($select);
 		// Zend_Debug::dump($this->settings->resultsPerPage);exit;
 		$dotPaginator = new Dot_Paginator($select, $page, $this->settings->resultsPerPage);
 		return $dotPaginator->getData();
 	}
+
+    // Get all the data from  the article matching $id
 	public function getSingleArticleData($id)
 	{
 		$select = $this->db->select()
@@ -60,6 +56,8 @@ class Article extends Dot_Model_User
 						->where('id = ?', $id);
 		return $this->db->fetchRow($select);
 	}
+
+    // Get the article from the DB which matches the $id
 	public function getArticleById($id)
     {
         $select = $this->db->select()
@@ -70,15 +68,18 @@ class Article extends Dot_Model_User
 
         return $result;
     }
+
+    // Update article if $id exists in the article DB, or add the article to the DB otherwise.
 	public function addArticleToDatabase($data, $id = "")
 	{
-		// $select = $this->db->insert('article', $data);
         if($id != "") {
             $select = $this->db->update('article', $data, "id = " . $id);
         } else {
             $select = $this->db->insert('article', $data);
         }
 	}
+
+    // Delete the article from the DB which matches the $id
 	public function deleteArticleById($id)
     {
         $select = $this->db->delete('article', "id = " . $id);
