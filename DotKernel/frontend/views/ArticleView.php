@@ -73,27 +73,21 @@ class Article_View extends View
             $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
         }
 
-        Zend_Debug::dump($commentData);
         foreach ($commentData as $commentKey => $comment) {
-
-                $this->tpl->setVar('COMMENT_USERID',$comment['username']);
-                $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
-                if(isset($comment['replies'])) {
-                    foreach($comment as $replyKey => $reply) {
-                        // Zend_Debug::dump($comment);exit;
-                        $this->tpl->setVar('REPLY_USERID',$comment['replies'][0]['username']);
-                        $this->tpl->setVar('REPLY_CONTENT',$comment['replies'][0]['content']);
-                   }
-                   $this->tpl->parse('comment_reply_block','comment_reply',true);
+            $this->tpl->setVar('COMMENT_USERID',$comment['username']);
+            $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
+            // we emplty the block before we make any changes, 
+            // just in case this block was already set in a previous loop from the foreach
+            $this->tpl->parse('comment_reply_block','');
+            if(isset($comment['replies'])) {
+                foreach($comment['replies'] as $replyKey => $reply) {
+                    $this->tpl->setVar('REPLY_USERNAME',$reply['username']);
+                    $this->tpl->setVar('REPLY_CONTENT',$reply['content']);
+                    $this->tpl->parse('comment_reply_block','comment_reply',true);
                 }
+            }
             $this->tpl->parse('comment_display_block','comment_display',true);
         }
-
-        // if($this->session->user) {
-        //     $this->tpl->parse('comment_display_block','comment_display', true);
-        // } else {
-        //     $this->tpl->parse('comment_display_block','');
-        // }
     }
 
     /*

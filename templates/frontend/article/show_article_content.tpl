@@ -33,7 +33,7 @@
         <br>
         <!-- BEGIN comment_reply -->
             <div style="padding-left: 3%">
-                <strong>-{REPLY_USERID}</strong>
+                <strong>-{REPLY_USERNAME}</strong>
                 <br>
                 {REPLY_CONTENT}
             </div>
