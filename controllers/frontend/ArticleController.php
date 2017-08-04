@@ -31,5 +31,12 @@ switch ($registry->requestAction)
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
 		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
 		$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply);
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // var_dump($_POST['id']);exit;
+	        if (isset($_POST['delete'])) {
+	            // var_dump($_POST);exit;
+	            $articleModel->deleteCommentById($_POST['id']);
+	        }
+	    }
 		break;
 }

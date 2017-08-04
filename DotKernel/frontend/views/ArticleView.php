@@ -74,7 +74,10 @@ class Article_View extends View
         }
 
         foreach ($commentData as $commentKey => $comment) {
+            // Zend_Debug::dump($commentKey);die;
+
             $this->tpl->setVar('COMMENT_USERID',$comment['username']);
+            $this->tpl->setVar('COMMENT_ID',$commentKey);
             $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
             // we emplty the block before we make any changes, 
             // just in case this block was already set in a previous loop from the foreach

@@ -102,4 +102,9 @@ class Article extends Dot_Model_User
 	    $result = $this->db->fetchAll($select);
 	    return $result;          
 	}
+
+	public function deleteCommentById($id)
+    {
+        $this->db->delete('comment', "id = " . $id);
+    }
 }
