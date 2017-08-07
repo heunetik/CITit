@@ -128,6 +128,7 @@ class Article extends Dot_Model_User
 
     public function commentDatabaseWork($data, $id)
     {
+    	$data = htmlentities($data);
         $myArray = ['content' => $data];
         if(isset($myArray['content']) && !empty($myArray['content'])) {
             $this->db->update('comment', $myArray, "id = " . $id);
