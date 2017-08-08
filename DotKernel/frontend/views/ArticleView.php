@@ -80,13 +80,14 @@ class Article_View extends View
             $this->tpl->setVar('COMMENT_USERID',$comment['username']);
             $this->tpl->setVar('COMMENT_ID',$commentKey);
             $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
-            if ($comment['userId'] == $this->session->user->id) {
-                $this->tpl->setVar('COMMENT_ID',$commentKey);
-                $this->tpl->parse('comment_controls_block','comment_controls',true);
-            } else {
-                $this->tpl->parse('comment_controls_block','',false);
+            if(isset($this->session->user->id)) {
+                if ($comment['userId'] == $this->session->user->id) {
+                    $this->tpl->setVar('COMMENT_ID',$commentKey);
+                    $this->tpl->parse('comment_controls_block','comment_controls',true);
+                } else {
+                    $this->tpl->parse('comment_controls_block','',false);
+                }
             }
-            
             // we emplty the block before we make any changes, 
             // just in case this block was already set in a previous loop from the foreach
             $this->tpl->parse('comment_reply_block','');
@@ -95,12 +96,14 @@ class Article_View extends View
                     $this->tpl->setVar('REPLY_USERNAME',$reply['username']);
                     $this->tpl->setVar('REPLY_ID',$reply['id']);
                     $this->tpl->setVar('REPLY_CONTENT',$reply['content']);
-                    if ($reply['userId'] == $this->session->user->id) {
-                        $this->tpl->setVar('REPLY_ID',$reply['id']);
-                        $this->tpl->parse('reply_controls_block','reply_controls',false);
-                    } else {
-                        $this->tpl->setVar('REPLY_ID','');
-                        $this->tpl->parse('reply_controls_block','',false);
+                    if(isset($this->session->user->id)) {
+                        if ($reply['userId'] == $this->session->user->id) {
+                            $this->tpl->setVar('REPLY_ID',$reply['id']);
+                            $this->tpl->parse('reply_controls_block','reply_controls',false);
+                        } else {
+                            $this->tpl->setVar('REPLY_ID','');
+                            $this->tpl->parse('reply_controls_block','',false);
+                        }
                     }
                     $this->tpl->parse('comment_reply_block','comment_reply',true);
                 }

@@ -51,7 +51,8 @@
                         </span>
                         <!-- END reply_controls -->
                         <br>
-                        <span class="{REPLY_ID}">{REPLY_CONTENT}</span>
+                        <span class="{REPLY_ID}" id="content{REPLY_ID}">{REPLY_CONTENT}</span>
+                        <span id="save{REPLY_ID}"></span>
                     </div>
                 <!-- END comment_reply -->
             </div>
