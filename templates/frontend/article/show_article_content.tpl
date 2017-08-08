@@ -5,6 +5,9 @@
     border-radius: 5px;
     margin: 5px;
 }
+span {
+    display: inline-flex;
+}
 </style>
 <div style="font-size: 16px">
     <p>CONTENT : {ARTICLE_CONTENT}</p>
@@ -25,9 +28,9 @@
         <hr size="10">
             <div>
                 <div id="appendTo{COMMENT_ID}">
-                    <strong class="{COMMENT_ID}">{COMMENT_USERID}</strong>
+                    <strong class="{COMMENT_ID}">{COMMENT_USERID} : </strong>
                     <br>
-                    <span style="padding: 15px 20px;"  id="content{COMMENT_ID}" class="{COMMENT_ID}">{COMMENT_CONTENT}</span>
+                    <span style="padding: 0px 20px;"  id="content{COMMENT_ID}" class="{COMMENT_ID}">{COMMENT_CONTENT}</span>
                     <!-- BEGIN comment_controls -->
                     <span>
                         <button id="edit{COMMENT_ID}" onclick="editComment({COMMENT_ID})">Edit</button>
@@ -40,9 +43,10 @@
                 replies:
                 <br>
                 <!-- BEGIN comment_reply -->
-                    <div style="padding-left: 3%">
+                    <div style="padding-left: 3%; margin: 7px">
                         <strong>-</strong>
-                        <strong class="{REPLY_ID}">{REPLY_USERNAME}</strong>
+                        <strong class="{REPLY_ID}">{REPLY_USERNAME} : </strong>
+                        <span style="padding: 0px 20px;" class="{REPLY_ID}" id="content{REPLY_ID}">{REPLY_CONTENT}</span>
                         <!-- BEGIN reply_controls -->
                         <span>
                         <span>
@@ -51,7 +55,6 @@
                         </span>
                         <!-- END reply_controls -->
                         <br>
-                        <span class="{REPLY_ID}" id="content{REPLY_ID}">{REPLY_CONTENT}</span>
                         <span id="save{REPLY_ID}"></span>
                     </div>
                 <!-- END comment_reply -->
@@ -99,7 +102,7 @@ function editComment(id)
     $("#edit"+id).hide();
     $("#delete"+id).hide();
 
-    $('#save'+id).append("<button class='button' id = 'save_button_"+id+"' onclick='saveComment("+id+")'>Save</button>");
+    $('#save'+id).append("<button id = 'save_button_"+id+"' onclick='saveComment("+id+")'>Save</button>");
 }
 
 function saveComment(id)
@@ -117,7 +120,7 @@ function saveComment(id)
         data: commentData,
         success: function (data) {
             $(".textarea"+id).replaceWith(function() {
-                return '<span style="padding: 15px 20px;" id="content'+id+'">' + $(this).val() + '</div>';
+                return '<span style="padding: 0px 20px;" id="content'+id+'">' + $(this).val() + '</div>';
             });
             $("#edit"+id).show();
             $("#delete"+id).show();
