@@ -16,6 +16,7 @@ span {
 </div>
 <div class="comment">
     <form method="POST">
+        <input type="hidden" name="newComment" />
         <textarea style="margin: 5px;" rows='3' cols='90' name="content"></textarea>
         <input style="margin: 5px;" type="submit" class="button">
     </form>
@@ -111,6 +112,7 @@ function saveComment(id)
     var textareaValue = $(".textarea"+id).val();
 
     commentData = {
+            edit: 1,
             id : id,
             content : textareaValue
     };

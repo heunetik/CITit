@@ -71,7 +71,6 @@ class Article extends Dot_Model_User
 				$comepletedData[$value['id']]['replies'] = $replies;
 			}
 		}
-		// Zend_Debug::dump($comments);exit;
 		return $comepletedData;
 	}
 
@@ -133,5 +132,10 @@ class Article extends Dot_Model_User
         if(isset($myArray['content']) && !empty($myArray['content'])) {
             $this->db->update('comment', $myArray, "id = " . $id);
         }
+    }
+
+    public function addCommentToDatabase($data)
+    {
+    	$this->db->insert('comment', $data);
     }
 }

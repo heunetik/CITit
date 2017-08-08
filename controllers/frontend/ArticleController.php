@@ -36,18 +36,29 @@ switch ($registry->requestAction)
 
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			var_dump($_POST);
-			$postId = (int)$_POST['id'];
-			$commentAuthorId = $articleModel->checkCommentPosterByCommentId($postId);
 			$uidFromSession = $session->user->id;
 
-	        if (isset($_POST['delete']) && ($uidFromSession == $commentAuthorId)) {
-	            $articleModel->deleteCommentById($postId);
-	            echo json_encode(['content' => '[deleted]']);
-	        } elseif (isset($_POST['content']) && ($uidFromSession == $commentAuthorId)) {
-	        	$articleModel->commentDatabaseWork($_POST['content'], $_POST['id']);
-	        }
+			if (isset($_POST['id']) && !empty($_POST['id'])) {
+				$postId = (int)$_POST['id'];
+				$commentAuthorId = $articleModel->checkCommentPosterByCommentId($postId);
+				if (isset($_POST['delete']) && ($uidFromSession == $commentAuthorId)) {
+		            $articleModel->deleteCommentById($postId);
+		            echo json_encode(['content' => '[deleted]']);
+		        } elseif (isset($_POST['edit']) && ($uidFromSession == $commentAuthorId)) {
+		        	$articleModel->commentDatabaseWork($_POST['content'], $_POST['id']);
+		        }
+			}
 
+			if (isset($_POST['newComment'])) {
+				$newCommentData = [
+					"postId" => $registry->request['id'],
+					"parent" => 0,
+					"content" => $_POST['content'],
+					"userId" => (int)$uidFromSession
+				];
+				$articleModel->addCommentToDatabase($newCommentData);
+				header('Location: '.$registry->configuration->website->params->url.'/article/show_article_content/id/'.$registry->request['id']);
+			}
 	        exit;
 
 	    }

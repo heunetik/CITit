@@ -83,7 +83,7 @@ class Article_View extends View
             if(isset($this->session->user->id)) {
                 if ($comment['userId'] == $this->session->user->id) {
                     $this->tpl->setVar('COMMENT_ID',$commentKey);
-                    $this->tpl->parse('comment_controls_block','comment_controls',true);
+                    $this->tpl->parse('comment_controls_block','comment_controls',false);
                 } else {
                     $this->tpl->parse('comment_controls_block','',false);
                 }
@@ -121,7 +121,7 @@ class Article_View extends View
             $this->template = $template;
         }
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
-        var_dump($this->template);
+        // var_dump($this->template);
         $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
         foreach ($data as $separateComment) {
             foreach($separateComment as $key => $value) {
