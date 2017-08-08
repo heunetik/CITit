@@ -64,18 +64,20 @@ class Article extends Dot_Model_User
 		foreach ($comments as $key => $value) {
 			$replies = $this->getCommentReplytByCommentId($value['id']);
 			$comepletedData[$value['id']]['content'] = $value['content'];
+			$comepletedData[$value['id']]['userId'] = $value['userId'];
 			$comepletedData[$value['id']]['username'] = $value['username'];
 			if(isset($replies) && !empty($replies))
 			{
 				$comepletedData[$value['id']]['replies'] = $replies;
 			}
 		}
+		// Zend_Debug::dump($comments);exit;
 		return $comepletedData;
 	}
 
 
 	/**
-	* get comments that have parrent id 0
+	* get comments that have parent id 0
 	*/
 	public function getComments($id)
 	{
@@ -96,10 +98,40 @@ class Article extends Dot_Model_User
 	public function getCommentReplytByCommentId($id)
 	{
 		$select = $this->db->select()
-	                    ->from('comment',array('content','date'))
+	                    ->from('comment',array('content','date','userId', 'id'))
 	                    ->where('parent = ?', $id)
 	                    ->join('user','user.id = comment.userId','username');
 	    $result = $this->db->fetchAll($select);
-	    return $result;          
+
+	    return $result;
 	}
+
+	public function deleteCommentById($id)
+    {
+        $data = [
+        	'content' => '[deleted]',
+        	'userId' => 0
+        	];
+        $this->db->update('comment', $data, 'id = ' . $id);
+    }
+
+    public function checkCommentPosterByCommentId($id)
+    {
+    	$select = $this->db->select()
+						->from('comment')
+						->where('id = ?', $id);
+
+		$result = $this->db->fetchRow($select);
+
+		return $result['userId'];
+    }
+
+    public function commentDatabaseWork($data, $id)
+    {
+    	$data = htmlentities($data);
+        $myArray = ['content' => $data];
+        if(isset($myArray['content']) && !empty($myArray['content'])) {
+            $this->db->update('comment', $myArray, "id = " . $id);
+        }
+    }
 }

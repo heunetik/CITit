@@ -17,6 +17,7 @@
 
 $articleView = new Article_View($tpl);
 $articleModel = new Article();
+$session = Zend_Registry::get('session');
 // all actions MUST set  the variable  $pageTitle
 $pageTitle = $option->pageTitle->action->{$registry->requestAction};
 switch ($registry->requestAction)
@@ -26,10 +27,29 @@ switch ($registry->requestAction)
 		$articleData = $articleModel->getAllArticleData();
 		$articleView->showArticles('show_articles', $articleData);
 		break;
+
 	case 'show_article_content':
-		// var_dump($registry->request);exit;
+
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
 		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
 		$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply);
+
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+			var_dump($_POST);
+			$postId = (int)$_POST['id'];
+			$commentAuthorId = $articleModel->checkCommentPosterByCommentId($postId);
+			$uidFromSession = $session->user->id;
+
+	        if (isset($_POST['delete']) && ($uidFromSession == $commentAuthorId)) {
+	            $articleModel->deleteCommentById($postId);
+	            echo json_encode(['content' => '[deleted]']);
+	        } elseif (isset($_POST['content']) && ($uidFromSession == $commentAuthorId)) {
+	        	$articleModel->commentDatabaseWork($_POST['content'], $_POST['id']);
+	        }
+
+	        exit;
+
+	    }
 		break;
 }

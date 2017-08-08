@@ -20,25 +20,108 @@
 <hr>
     <h1>Comments:</h1>
 <div>
-<!-- BEGIN comment_display -->
-<hr size="10">
-    <div>
-        <div>
-            <strong>{COMMENT_USERID}</strong>
-            <br>
-            {COMMENT_CONTENT}
-        </div>
-        <br>
-        replies:
-        <br>
-        <!-- BEGIN comment_reply -->
-            <div style="padding-left: 3%">
-                <strong>-{REPLY_USERNAME}</strong>
+    <!-- BEGIN comment_display -->
+    <div id="comment_{COMMENT_ID}">
+        <hr size="10">
+            <div>
+                <div id="appendTo{COMMENT_ID}">
+                    <strong class="{COMMENT_ID}">{COMMENT_USERID}</strong>
+                    <br>
+                    <span style="padding: 15px 20px;"  id="content{COMMENT_ID}" class="{COMMENT_ID}">{COMMENT_CONTENT}</span>
+                    <!-- BEGIN comment_controls -->
+                    <span>
+                        <button id="edit{COMMENT_ID}" onclick="editComment({COMMENT_ID})">Edit</button>
+                        <button id="delete{COMMENT_ID}" onclick="deleteComment({COMMENT_ID})">Delete</button>
+                    </span>
+                    <span id="save{COMMENT_ID}"></span>
+                    <!-- END comment_controls -->
+                </div>
                 <br>
-                {REPLY_CONTENT}
+                replies:
+                <br>
+                <!-- BEGIN comment_reply -->
+                    <div style="padding-left: 3%">
+                        <strong>-</strong>
+                        <strong class="{REPLY_ID}">{REPLY_USERNAME}</strong>
+                        <!-- BEGIN reply_controls -->
+                        <span>
+                        <span>
+                            <button id="edit{REPLY_ID}" onclick="editComment({REPLY_ID})">Edit</button>
+                        <button id="delete{REPLY_ID}" onclick="deleteComment({REPLY_ID})">Delete</button>
+                        </span>
+                        <!-- END reply_controls -->
+                        <br>
+                        <span class="{REPLY_ID}">{REPLY_CONTENT}</span>
+                    </div>
+                <!-- END comment_reply -->
             </div>
-        <!-- END comment_reply -->
+        <hr>
     </div>
-<hr>    
-<!-- END comment_display -->
+    <!-- END comment_display -->
 </div>
+<script>
+function deleteComment(id)
+{
+    if (confirm("Are you sure you want to delete the comment?")) {
+
+        var commentData = {};
+
+        commentData = {
+                id : id,
+                delete : 1
+        };
+
+        console.log(commentData);
+        $.ajax({
+            type: 'POST',
+            data: commentData,
+            success: function (stuff) {
+
+                var myData = JSON.parse(stuff);
+
+                $("."+id).hide().html(myData.content).fadeIn('fast');
+            }
+        });
+
+        $("#edit"+id).remove();
+        $("#delete"+id).remove();
+    }
+}
+
+function editComment(id)
+{
+    var x = $("#content"+id).html();
+    $("#content"+id).replaceWith(function() {
+        return "<textarea class='textarea"+id+"' rows='2' cols='100'>" + $(this).val() + '</textarea>';
+    });
+    $(".textarea"+id).html(x);
+    $("#edit"+id).hide();
+    $("#delete"+id).hide();
+
+    $('#save'+id).append("<button class='button' id = 'save_button_"+id+"' onclick='saveComment("+id+")'>Save</button>");
+}
+
+function saveComment(id)
+{
+    var commentData = {};
+    var textareaValue = $(".textarea"+id).val();
+
+    commentData = {
+            id : id,
+            content : textareaValue
+    };
+
+    $.ajax({
+        type: 'POST',
+        data: commentData,
+        success: function (data) {
+            $(".textarea"+id).replaceWith(function() {
+                return '<span style="padding: 15px 20px;" id="content'+id+'">' + $(this).val() + '</div>';
+            });
+            $("#edit"+id).show();
+            $("#delete"+id).show();
+            $("#save_button_"+id).remove();
+        }
+    });
+}
+</script>
