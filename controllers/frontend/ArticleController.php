@@ -56,7 +56,8 @@ switch ($registry->requestAction)
 					"content" => $_POST['content'],
 					"userId" => (int)$uidFromSession
 				];
-				$articleModel->addCommentToDatabase($newCommentData);
+				if($newCommentData['content'] != '')
+					$articleModel->addCommentToDatabase($newCommentData);
 				if((int)$_POST['parent'] == 0) {
 					header('Location: '.$registry->configuration->website->params->url.'/article/show_article_content/id/'.$registry->request['id']);
 				} else {
