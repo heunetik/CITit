@@ -68,6 +68,7 @@ class Article_View extends View
         $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
         $this->tpl->setBlock('comment_display','comment_reply','comment_reply_block');
         $this->tpl->setBlock('comment_display','comment_controls','comment_controls_block');
+        $this->tpl->setBlock('comment_display','comment_replyToComment','comment_replyToComment_block');
         $this->tpl->setBlock('comment_reply','reply_controls','reply_controls_block');
 
 
@@ -81,12 +82,15 @@ class Article_View extends View
             $this->tpl->setVar('COMMENT_ID',$commentKey);
             $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
             if(isset($this->session->user->id)) {
+                $this->tpl->parse('comment_replyToComment_block','comment_replyToComment',false);
                 if ($comment['userId'] == $this->session->user->id) {
                     $this->tpl->setVar('COMMENT_ID',$commentKey);
                     $this->tpl->parse('comment_controls_block','comment_controls',false);
                 } else {
                     $this->tpl->parse('comment_controls_block','',false);
                 }
+            } else {
+                $this->tpl->parse('comment_replyToComment_block','',false);
             }
             // we emplty the block before we make any changes, 
             // just in case this block was already set in a previous loop from the foreach
