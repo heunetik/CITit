@@ -52,7 +52,7 @@ switch ($registry->requestAction)
 			if (isset($_POST['newComment'])) {
 				$newCommentData = [
 					"postId" => $registry->request['id'],
-					"parent" => 0,
+					"parent" => (int)$_POST['parent'],
 					"content" => $_POST['content'],
 					"userId" => (int)$uidFromSession
 				];

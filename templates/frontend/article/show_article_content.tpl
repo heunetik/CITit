@@ -8,6 +8,13 @@
 span {
     display: inline-flex;
 }
+.success {
+    color: #4F8A10;
+    background-color: #DFF2BF;
+    border-radius:.5em;
+    border: 1px solid;
+    box-shadow:1px 1px 3px #888;
+}
 </style>
 <div style="font-size: 16px">
     <p>CONTENT : {ARTICLE_CONTENT}</p>
@@ -17,6 +24,7 @@ span {
 <div class="comment">
     <form method="POST">
         <input type="hidden" name="newComment" />
+        <input type="hidden" name="parent" value="0" />
         <textarea style="margin: 5px;" rows='3' cols='90' name="content"></textarea>
         <input style="margin: 5px;" type="submit" class="button">
     </form>
@@ -39,6 +47,11 @@ span {
                     </span>
                     <span id="save{COMMENT_ID}"></span>
                     <!-- END comment_controls -->
+                    <!-- BEGIN comment_replyToComment -->
+                    <div id="appendReplyTo{COMMENT_ID}" style="display: inline-block">
+                        <button id="reply{COMMENT_ID}" onclick="replyToCommentById({COMMENT_ID})">Reply</button>
+                    </div>
+                    <!-- END comment_replyToComment -->
                 </div>
                 <br>
                 replies:
@@ -102,32 +115,85 @@ function editComment(id)
     $(".textarea"+id).html(x);
     $("#edit"+id).hide();
     $("#delete"+id).hide();
+    $("#reply"+id).hide();
 
     $('#save'+id).append("<button id = 'save_button_"+id+"' onclick='saveComment("+id+")'>Save</button>");
 }
 
-function saveComment(id)
+function saveComment(id, mode = 0)
 {
     var commentData = {};
     var textareaValue = $(".textarea"+id).val();
+    if(mode == 0) {
+        commentData = {
+                edit: 1,
+                id : id,
+                content : textareaValue
+        };
 
-    commentData = {
-            edit: 1,
-            id : id,
-            content : textareaValue
-    };
+        $.ajax({
+            type: 'POST',
+            data: commentData,
+            success: function (data) {
+                $(".textarea"+id).replaceWith(function() {
+                    return '<span style="padding: 0px 20px;" id="content'+id+'">' + $(this).val() + '</span>';
+                });
+                $("#edit"+id).show();
+                $("#delete"+id).show();
+                $("#reply"+id).show();
+                $("#save_button_"+id).remove();
+            }
+        });
+    } else if(mode == 1) {
+        commentData = {
+                newComment: 1,
+                parent : id,
+                content : textareaValue
+        };
 
-    $.ajax({
-        type: 'POST',
-        data: commentData,
-        success: function (data) {
-            $(".textarea"+id).replaceWith(function() {
-                return '<span style="padding: 0px 20px;" id="content'+id+'">' + $(this).val() + '</div>';
-            });
-            $("#edit"+id).show();
-            $("#delete"+id).show();
-            $("#save_button_"+id).remove();
-        }
-    });
+        $.ajax({
+            type: 'POST',
+            data: commentData,
+            success: function (data) {
+                $(".textarea"+id).replaceWith(function() {
+                    return '<span style="padding: 5px" class="fadeThis success">Comment submitted!</span>';
+                });
+                $(".fadeThis").fadeOut(3200);
+                $("#reply"+id).show();
+                $("#edit"+id).show();
+                $("#delete"+id).show();
+                $("#save_button_"+id).remove();
+            }
+        });
+    }
+}
+function replyToCommentById(id)
+{
+    $('#appendReplyTo'+id).append("<textarea class='textarea"+id+"' rows='2' cols='100' placeholder='Reply to comment'></textarea>");
+    $("#reply"+id).hide();
+    $("#edit"+id).hide();
+    $("#delete"+id).hide();
+    $('#appendReplyTo'+id).append("<button id = 'save_button_"+id+"' onclick='saveComment("+id+", 1)'>Save</button>");
+    // var commentData = {};
+    // var textareaValue = $(".textarea"+id).val();
+
+    // commentData = {
+    //         edit: 1,
+    //         id : id,
+    //         content : textareaValue
+    // };
+
+    // $.ajax({
+    //     type: 'POST',
+    //     data: commentData,
+    //     success: function (data) {
+    //         $(".textarea"+id).replaceWith(function() {
+    //             return '<span style="padding: 0px 20px;" id="content'+id+'">' + $(this).val() + '</div>';
+    //         });
+    //         $("#edit"+id).show();
+    //         $("#delete"+id).show();
+    //         $("#save_button_"+id).remove();
+    //     }
+    // });
 }
 </script>
