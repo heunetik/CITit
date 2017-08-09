@@ -134,6 +134,22 @@ class Article extends Dot_Model_User
         }
     }
 
+    public function userIdToUsername($id)
+    {
+    	$select = $this->db->select()
+	                    ->from('user',array('username'))
+	                    ->where('id = ?', $id);
+	    return $this->db->fetchOne($select);
+    }
+
+    public function returnLastCommentIdOfUserByUserId($id)
+    {
+    	$select = $this->db->select()
+	                    ->from('comment', array(new Zend_Db_Expr('max(id) as maxId')))
+	                    ->where('userId = ?', $id);
+	    return $this->db->fetchOne($select);
+    }
+
     public function addCommentToDatabase($data)
     {
     	$this->db->insert('comment', $data);

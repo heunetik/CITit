@@ -35,7 +35,7 @@ span {
     <!-- BEGIN comment_display -->
     <div id="comment_{COMMENT_ID}">
         <hr size="10">
-            <div>
+            <div id="append{COMMENT_ID}">
                 <div id="appendTo{COMMENT_ID}">
                     <strong class="{COMMENT_ID}">{COMMENT_USERID} : </strong>
                     <br>
@@ -155,9 +155,14 @@ function saveComment(id, mode = 0)
             type: 'POST',
             data: commentData,
             success: function (data) {
+                data = JSON.parse(data);
+                // alert(data.parent);
                 $(".textarea"+id).replaceWith(function() {
                     return '<span style="padding: 5px" class="fadeThis success">Comment submitted!</span>';
                 });
+                // $("#append"+data.parent).append("hello");
+                $("#append"+data.parent).append('<div style="padding-left: 3%; margin: 7px"><strong>-</strong><strong class="'+data.lastCommId+'">'+data.username+' : </strong><span style="padding: 0px 20px;" class="'+data.lastCommId+'" id="content'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN reply_controls --><span><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><!-- END reply_controls --><br><span id="save'+data.lastCommId+'"></span></div>');
+                fadeStuffByProperty("."+data.lastCommId);
                 $(".fadeThis").fadeOut(3200);
                 $("#reply"+id).show();
                 $("#edit"+id).show();
@@ -167,6 +172,7 @@ function saveComment(id, mode = 0)
         });
     }
 }
+
 function replyToCommentById(id)
 {
     $('#appendReplyTo'+id).append("<textarea class='textarea"+id+"' rows='2' cols='100' placeholder='Reply to comment'></textarea>");
@@ -174,26 +180,20 @@ function replyToCommentById(id)
     $("#edit"+id).hide();
     $("#delete"+id).hide();
     $('#appendReplyTo'+id).append("<button id = 'save_button_"+id+"' onclick='saveComment("+id+", 1)'>Save</button>");
-    // var commentData = {};
-    // var textareaValue = $(".textarea"+id).val();
+}
 
-    // commentData = {
-    //         edit: 1,
-    //         id : id,
-    //         content : textareaValue
-    // };
+function fadeStuffByProperty(property)
+{
+    $(property).parent().css('background-color','hsl(92, 72%, 75%)');
 
-    // $.ajax({
-    //     type: 'POST',
-    //     data: commentData,
-    //     success: function (data) {
-    //         $(".textarea"+id).replaceWith(function() {
-    //             return '<span style="padding: 0px 20px;" id="content'+id+'">' + $(this).val() + '</div>';
-    //         });
-    //         $("#edit"+id).show();
-    //         $("#delete"+id).show();
-    //         $("#save_button_"+id).remove();
-    //     }
-    // });
+    var d = 1000;
+    for(var i=75; i<=100; i=i+0.6){
+        d  += 10;
+        (function(ii,dd){
+            setTimeout(function(){
+                $(property).parent().css('backgroundColor','hsl(92, 72%,'+ii+'%)'); 
+            }, dd);    
+        })(i,d);
+    }
 }
 </script>
