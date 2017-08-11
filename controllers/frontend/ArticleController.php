@@ -58,13 +58,11 @@ switch ($registry->requestAction)
 				];
 				if($newCommentData['content'] != '')
 					$articleModel->addCommentToDatabase($newCommentData);
-				if((int)$_POST['parent'] == 0) {
-					header('Location: '.$registry->configuration->website->params->url.'/article/show_article_content/id/'.$registry->request['id']);
-				} else {
-					$newCommentData['username'] = $articleModel->userIdToUsername($newCommentData['userId']);
-					$newCommentData['lastCommId'] = $articleModel->returnLastCommentIdOfUserByUserId($newCommentData['userId']);
-					echo json_encode($newCommentData);
-				}
+				
+				$newCommentData['username'] = $articleModel->userIdToUsername($newCommentData['userId']);
+				$newCommentData['lastCommId'] = $articleModel->returnLastCommentIdOfUserByUserId($newCommentData['userId']);
+
+				echo json_encode($newCommentData);
 			}
 	        exit;
 

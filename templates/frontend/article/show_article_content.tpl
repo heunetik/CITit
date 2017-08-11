@@ -22,16 +22,16 @@ span {
     <p>Article ID : {ARTICLE_ID}</p>
 </div>
 <div class="comment">
-    <form method="POST">
-        <input type="hidden" name="newComment" />
-        <input type="hidden" name="parent" value="0" />
-        <textarea style="margin: 5px;" rows='3' cols='90' name="content"></textarea>
-        <input style="margin: 5px;" type="submit" class="button">
-    </form>
+    <!-- <form method="POST"> -->
+        <!-- <input type="hidden" name="newComment" /> -->
+        <!-- <input type="hidden" name="parent" value="0" /> -->
+        <textarea id="newComment" style="margin: 5px;" rows='3' cols='90' name="content"></textarea>
+        <button style="margin: 5px;" onclick="submitComment()" class="button">Submit</button>
+    <!-- </form> -->
 </div>
 <hr>
     <h1>Comments:</h1>
-<div>
+<div id="commentDiv">
     <!-- BEGIN comment_display -->
     <div id="comment_{COMMENT_ID}">
         <hr size="10">
@@ -120,6 +120,25 @@ function editComment(id)
     $('#save'+id).append("<button id = 'save_button_"+id+"' onclick='saveComment("+id+")'>Save</button>");
 }
 
+function submitComment()
+{
+    var commentData = {};
+    var textareaValue = $("#newComment").val();
+    // alert(textareaValue);
+    commentData = {
+                newComment: 1,
+                parent : 0,
+                content : textareaValue
+        };
+    $.ajax({
+            type: 'POST',
+            data: commentData,
+            success: function (data) {
+                data = JSON.parse(data);
+                $("#commentDiv").prepend('<div id="comment_'+data.lastCommId+'"><hr size="10"><div id="append'+data.lastCommId+'"><div id="appendTo'+data.lastCommId+'"><strong class="'+data.lastCommId+'">'+data.username+' : </strong><br><span style="padding: 0px 20px;"  id="content'+data.lastCommId+'" class="'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN comment_controls --><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><span id="save'+data.lastCommId+'"></span><!-- END comment_controls --><!-- BEGIN comment_replyToComment --><div id="appendReplyTo'+data.lastCommId+'" style="display: inline-block"><button id="reply{COMMENT_ID}" onclick="replyToCommentById('+data.lastCommId+')">Reply</button></div><!-- END comment_replyToComment --></div><br>');
+            }
+        });
+}
 function saveComment(id, mode = 0)
 {
     var commentData = {};
@@ -138,6 +157,7 @@ function saveComment(id, mode = 0)
                 $(".textarea"+id).replaceWith(function() {
                     return '<span style="padding: 0px 20px;" id="content'+id+'">' + $(this).val() + '</span>';
                 });
+                fadeStuffByProperty("#content"+id,"yellow");
                 $("#edit"+id).show();
                 $("#delete"+id).show();
                 $("#reply"+id).show();
@@ -162,7 +182,7 @@ function saveComment(id, mode = 0)
                 });
                 // $("#append"+data.parent).append("hello");
                 $("#append"+data.parent).append('<div style="padding-left: 3%; margin: 7px"><strong>-</strong><strong class="'+data.lastCommId+'">'+data.username+' : </strong><span style="padding: 0px 20px;" class="'+data.lastCommId+'" id="content'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN reply_controls --><span><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><!-- END reply_controls --><br><span id="save'+data.lastCommId+'"></span></div>');
-                fadeStuffByProperty("."+data.lastCommId);
+                fadeStuffByProperty("."+data.lastCommId, "green");
                 $(".fadeThis").fadeOut(3200);
                 $("#reply"+id).show();
                 $("#edit"+id).show();
@@ -182,16 +202,36 @@ function replyToCommentById(id)
     $('#appendReplyTo'+id).append("<button id = 'save_button_"+id+"' onclick='saveComment("+id+", 1)'>Save</button>");
 }
 
-function fadeStuffByProperty(property)
+function fadeStuffByProperty(property, color)
 {
-    $(property).parent().css('background-color','hsl(92, 72%, 75%)');
+    var h,s,l;
+
+    switch(color) {
+        default:
+            h = 92;
+            s = 72;
+            l = 75;
+            break;
+        case "green":
+            h = 92;
+            s = 72;
+            l = 75;
+            break;
+        case "yellow":
+            h = 48;
+            s = 97;
+            l = 85;
+            break;
+    }
+
+    $(property).parent().css('background-color','hsl('+h+', '+s+'%, '+l+'%)');
 
     var d = 1000;
-    for(var i=75; i<=100; i=i+0.6){
+    for(var i=l; i<=100; i=i+0.6){
         d  += 10;
         (function(ii,dd){
             setTimeout(function(){
-                $(property).parent().css('backgroundColor','hsl(92, 72%,'+ii+'%)'); 
+                $(property).parent().css('backgroundColor','hsl('+h+', '+s+'%,'+ii+'%)'); 
             }, dd);    
         })(i,d);
     }
