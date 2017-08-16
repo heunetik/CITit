@@ -17,9 +17,9 @@ span {
 }
 </style>
 <div style="font-size: 16px">
+    <p>CONTENT : {ARTICLE_TITLE}</p>
     <p>CONTENT : {ARTICLE_CONTENT}</p>
     <p>Created on : {ARTICLE_DATE}</p>
-    <p>Article ID : {ARTICLE_ID}</p>
 </div>
 <!-- BEGIN comment_submit -->
 <div>

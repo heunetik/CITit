@@ -16,7 +16,7 @@
  	<routes>
  		<!-- default controllers for modules -->
 		<controller>
-			<frontend>Page</frontend>
+			<frontend>Article</frontend>
 			<admin>System</admin>
 			<rss>Sample</rss>
 			<mobile>Page</mobile>

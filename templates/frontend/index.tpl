@@ -28,9 +28,6 @@
 			</div>
 		</header>
 		<div id="body">
-			<nav id="sidebar">
-				{MENU_SIDEBAR}
-			</nav>
 			<div id="content">
 				<h1>{PAGE_CONTENT_TITLE}</h1>
 				{MESSAGE_BLOCK}
@@ -41,9 +38,6 @@
 		<div id="push"></div>
 	</div>
 	<footer>
-		<div id="footer-content">
-			{MENU_FOOTER}
-		</div>
 		<div class="debugger">
 			{DEBUGGER}
 		</div>
