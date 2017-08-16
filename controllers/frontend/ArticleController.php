@@ -49,7 +49,7 @@ switch ($registry->requestAction)
 		        }
 			}
 
-			if (isset($_POST['newComment'])) {
+			if (isset($_POST['newComment']) && $uidFromSession != 0) {
 				$newCommentData = [
 					"postId" => $registry->request['id'],
 					"parent" => (int)$_POST['parent'],

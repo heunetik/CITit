@@ -66,6 +66,7 @@ class Article_View extends View
         }
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
         $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
+        $this->tpl->setBlock('tpl_main','comment_submit','comment_submit_block');
         $this->tpl->setBlock('comment_display','comment_reply','comment_reply_block');
         $this->tpl->setBlock('comment_display','comment_controls','comment_controls_block');
         $this->tpl->setBlock('comment_display','comment_replyToComment','comment_replyToComment_block');
@@ -74,6 +75,12 @@ class Article_View extends View
 
         foreach($data as $key => $value) {
             $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
+        }
+
+        if(isset($this->session->user->id)) {
+            $this->tpl->parse('comment_submit_block','comment_submit',false);
+        } else {
+            $this->tpl->parse('comment_submit_block','',false);            
         }
 
         foreach ($commentData as $commentKey => $comment) {
