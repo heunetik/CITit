@@ -48,7 +48,12 @@ class Article_View extends View
             if($separateArticle['type'] == 0) {
                 $this->tpl->setVar('SET_BY_TYPE', "article/show_article_content/id/" . $separateArticle['id']);
             } else {
-                $this->tpl->setVar('SET_BY_TYPE', 'http://' . $separateArticle['content']);
+                $ok = preg_match("/http\:\/\//", $separateArticle['content']);
+                $pref = '';
+                if($ok == 0) {
+                    $pref = 'http://';
+                }
+                $this->tpl->setVar('SET_BY_TYPE', $pref . $separateArticle['content']);
             }
             foreach($separateArticle as $key => $value) {
                 $this->tpl->setVar('ARTICLE_'.strtoupper($key), strtoupper($value));
