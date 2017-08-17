@@ -62,7 +62,14 @@ class Article_View extends View
         }
         $this->tpl->setVar('POST_COUNT', count($data));
     }
-
+    
+    public function useTemplate($template = '')
+    {
+        if($template != '') {
+            $this->template = $template;
+        }
+        $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
+    }
     /*
     Displays one single article, with all of it's data
     on the specified template.

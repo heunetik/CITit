@@ -155,4 +155,9 @@ class Article extends Dot_Model_User
     {
     	$this->db->insert('comment', $data);
     }
+
+    public function addNewPostToDatabase($data)
+    {
+    	$this->db->insert('article', $data);
+    }
 }

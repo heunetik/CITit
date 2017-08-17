@@ -73,4 +73,27 @@ switch ($registry->requestAction)
 
 	    }
 		break;
+	case 'add':
+		$uidFromSession = $session->user->id;
+		if($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($uidFromSession) && !empty($uidFromSession))) {
+			$title = $_POST['title'];
+			$sub = $_POST['sub'];
+			$type = $_POST['type'];
+			$content = $_POST['content'];
+			if($type == 1) {
+				$content = str_replace('https://','http://', $content);
+			}
+			$data = [
+				'title' => $title,
+				'sub' => $sub,
+				'type' => $type,
+				'content' => $content,
+				'authorId' => $uidFromSession
+			];
+			$articleModel->addNewPostToDatabase($data);
+		} elseif (!isset($uidFromSession) || empty($uidFromSession)) {
+			header('location: '.$registry->configuration->website->params->url.'/user/login');
+		}
+		$articleView->useTemplate('add_article');
+		break;
 }
