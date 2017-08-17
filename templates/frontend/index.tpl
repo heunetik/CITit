@@ -10,7 +10,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<link rel="canonical" href="{CANONICAL_URL}" >
 	<link rel="stylesheet" href="{TEMPLATES_URL}/css/frontend/style.css" type="text/css" >
-	<link rel="stylesheet" href="{SITE_URL}/externals/fonts/stylesheet.css" type="text/css" >	
+	<link rel="stylesheet" href="{SITE_URL}/externals/fonts/stylesheet.css" type="text/css" >
+	<link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">	
 	<script src="{SITE_URL}/externals/jquery/jquery.min.js"></script>
 	<script type="text/javascript" src="{TEMPLATES_URL}/js/frontend/main.js"></script>
 	<!--[if lt IE 9]>
@@ -22,7 +23,7 @@
 		<header>
 			<div id="header-content" class="clearfix">
 				<div id="logo">
-					<h1><a href="{SITE_URL}/">{SITE_NAME}</a></h1>
+					<h1><a style="font-family: 'Pacifico', cursive;" href="{SITE_URL}/">{SITE_NAME}</a></h1>
 				</div>
 				{MENU_TOP}
 			</div>

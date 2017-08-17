@@ -7,4 +7,4 @@
 </div>
 <hr>
 <!-- END article_list -->
-<p>TOTAL POSTS: {ARTICLE_COUNT}</p>
+<p>TOTAL POSTS: {POST_COUNT}</p>

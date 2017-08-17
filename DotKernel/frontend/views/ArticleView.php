@@ -50,7 +50,7 @@ class Article_View extends View
             }
             $this->tpl->parse('article_list_block','article_list',true);
         }
-        $this->tpl->setVar('ARTICLE_COUNT', count($data));
+        $this->tpl->setVar('POST_COUNT', count($data));
     }
 
     /*
@@ -74,6 +74,9 @@ class Article_View extends View
 
 
         foreach($data as $key => $value) {
+            if($key == 'date') {
+                $value = date('Y - m - d', strtotime($value));
+            }
             $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
         }
 

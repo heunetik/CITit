@@ -8,6 +8,9 @@
 span {
     display: inline-flex;
 }
+textarea {
+    resize: none;
+}
 .success {
     color: #4F8A10;
     background-color: #DFF2BF;
@@ -17,14 +20,16 @@ span {
 }
 </style>
 <div style="font-size: 16px">
-    <p>CONTENT : {ARTICLE_TITLE}</p>
-    <p>CONTENT : {ARTICLE_CONTENT}</p>
-    <p>Created on : {ARTICLE_DATE}</p>
+    <h2>{ARTICLE_TITLE}</h2>
+    <hr>
+    <p>{ARTICLE_CONTENT}</p>
+    <span style="font-size: 12px; float: right">{ARTICLE_DATE}</span>
+    <hr>
 </div>
 <!-- BEGIN comment_submit -->
 <div>
-    <div class="comment" style="display:inline-block; text-align: center">
-        <textarea id="newComment" style="margin: 5px; float: left" rows='3' cols='120' name="content"></textarea>
+    <div class="comment" style="display: inline-block; text-align: center; width:100%; overflow: hidden;">
+        <textarea id="newComment" style="margin: 6px; float: left; position: relative; z-index:100; width:99%;" rows='3' cols='120' name="content"></textarea>
         <span style="display: none; padding: 5px;" center class="fadeThis success">Comment submitted!</span>
     </div>
     <button style="margin: 5px; float: right;" onclick="submitComment()" class="button">Submit</button>
@@ -136,11 +141,12 @@ function submitComment()
             data: commentData,
             success: function (data) {
                 data = JSON.parse(data);
-                $("#commentDiv").prepend('<div id="comment_'+data.lastCommId+'"><hr size="10"><div id="append'+data.lastCommId+'"><div id="appendTo'+data.lastCommId+'"><strong class="'+data.lastCommId+'">'+data.username+' : </strong><br><span style="padding: 0px 20px;"  id="content'+data.lastCommId+'" class="'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN comment_controls --><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><span id="save'+data.lastCommId+'"></span><!-- END comment_controls --><!-- BEGIN comment_replyToComment --><div id="appendReplyTo'+data.lastCommId+'" style="display: inline-block"><button id="reply{COMMENT_ID}" onclick="replyToCommentById('+data.lastCommId+')">Reply</button></div><!-- END comment_replyToComment --></div><br><hr>');
+                $("#commentDiv").prepend('<div id="comment_'+data.lastCommId+'"><hr size="10"><div id="append'+data.lastCommId+'"><div id="appendTo'+data.lastCommId+'"><strong class="'+data.lastCommId+'">'+data.username+' : </strong><br><span style="padding: 0px 20px;"  id="content'+data.lastCommId+'" class="'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN comment_controls --><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><span id="save'+data.lastCommId+'"></span><!-- END comment_controls --><!-- BEGIN comment_replyToComment --><div id="appendReplyTo'+data.lastCommId+'" style="display: inline-block"><button id="reply'+data.lastCommId+'" onclick="replyToCommentById('+data.lastCommId+')">Reply</button></div><!-- END comment_replyToComment --></div><br><hr>');
                 fadeStuffByProperty("#content"+data.lastCommId,"green");
                 // $(".fadeThis").css("display","block");
                 $("#newComment").val("");
-                $(".fadeThis").show();
+                // $(".fadeThis").show();
+                $(".fadeThis").css('display','block');
                 $(".fadeThis").fadeOut(3200);
             }
         });

@@ -32,7 +32,12 @@ switch ($registry->requestAction)
 
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
 		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
-		$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply);
+		if($articleData != 0) {
+			$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply);
+		} else {
+			header('location: '.$registry->configuration->website->params->url.'/show_articles');
+			exit;
+		}
 
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -53,7 +58,7 @@ switch ($registry->requestAction)
 				$newCommentData = [
 					"postId" => $registry->request['id'],
 					"parent" => (int)$_POST['parent'],
-					"content" => $_POST['content'],
+					"content" => htmlentities($_POST['content']),
 					"userId" => (int)$uidFromSession
 				];
 				if($newCommentData['content'] != '')
