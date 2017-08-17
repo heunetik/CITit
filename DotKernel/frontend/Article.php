@@ -47,6 +47,7 @@ class Article extends Dot_Model_User
 	{
 		$select = $this->db->select()
 						->from('article');
+		// Zend_Debug::dump($this->db->fetchAll($select));die;
 		return $this->db->fetchAll($select);
 	}
 	public function getSingleArticleData($id)

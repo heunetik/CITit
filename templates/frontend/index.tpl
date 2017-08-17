@@ -23,7 +23,7 @@
 		<header>
 			<div id="header-content" class="clearfix">
 				<div id="logo">
-					<h1><a style="font-family: 'Pacifico', cursive;" href="{SITE_URL}/">{SITE_NAME}</a></h1>
+					<h1><a style="font-family: 'Pacifico', cursive;" href="{SITE_URL}/"><img style="width: 32px; height: 32px"src="http://i.imgur.com/2IE7yka.png"></img>{SITE_NAME}</a></h1>
 				</div>
 				{MENU_TOP}
 			</div>

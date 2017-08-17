@@ -45,6 +45,11 @@ class Article_View extends View
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
         $this->tpl->setBlock('tpl_main','article_list','article_list_block');
         foreach ($data as $separateArticle) {
+            if($separateArticle['type'] == 0) {
+                $this->tpl->setVar('SET_BY_TYPE', "article/show_article_content/id/" . $separateArticle['id']);
+            } else {
+                $this->tpl->setVar('SET_BY_TYPE', $separateArticle['content']);
+            }
             foreach($separateArticle as $key => $value) {
                 $this->tpl->setVar('ARTICLE_'.strtoupper($key), strtoupper($value));
             }
@@ -72,10 +77,20 @@ class Article_View extends View
         $this->tpl->setBlock('comment_display','comment_replyToComment','comment_replyToComment_block');
         $this->tpl->setBlock('comment_reply','reply_controls','reply_controls_block');
 
-
         foreach($data as $key => $value) {
             if($key == 'date') {
                 $value = date('Y - m - d', strtotime($value));
+            }
+            if($key == 'type' && $value == 1) {
+
+                $ok = preg_match("/(http\:\/\/imgur\.com\/)(.+)/", $data['content'], $toUse);
+                if($ok) {
+                    if($toUse[1] == "http://imgur.com/") {
+                        $this->tpl->setVar('ARTICLE_CONTENT', '<blockquote class="imgur-embed-pub" lang="en" data-id="'.$toUse[2].'"><a href="http://imgur.com/a/'.$toUse[2].'">Never give up</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>');
+                    }
+                } else {
+                    $this->tpl->setVar('ARTICLE_CONTENT','<a href="http://'.$data['content'].'">'.$data['content'].'</a>');
+                }
             }
             $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
         }
