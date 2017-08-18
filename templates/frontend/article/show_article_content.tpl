@@ -114,7 +114,7 @@ function deleteComment(id)
 
 function editComment(id)
 {
-    var x = $("#content"+id).html();
+    var x = $("#content"+id).text();
     $("#content"+id).replaceWith(function() {
         return "<textarea class='textarea"+id+"' rows='2' cols='100'>" + $(this).val() + '</textarea>';
     });

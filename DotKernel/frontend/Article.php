@@ -48,7 +48,15 @@ class Article extends Dot_Model_User
 		$select = $this->db->select()
 						->from('article');
 		// Zend_Debug::dump($this->db->fetchAll($select));die;
-		return $this->db->fetchAll($select);
+		$queriedList = $this->db->fetchAll($select);
+		$finished = [];
+		foreach($queriedList as $key => $inner) {
+			$inner['commentCount'] = $this->getCommentCount((int)$inner['id']);
+			$finished[$key] = $inner;
+		}
+		// Zend_Debug::dump($finished);die;
+
+		return $finished;
 	}
 	public function getSingleArticleData($id)
 	{
@@ -92,8 +100,19 @@ class Article extends Dot_Model_User
 	    return $result;
 	}
 
+	public function getCommentCount($id)
+	{
+		$defaultParentId = 0;
+	    $select = $this->db->select()
+	                    // ->from('comment')
+	                    ->from('comment', array('row_count' => 'COUNT(*)'))
+	                    ->where('postId = ?', $id);
+	    $result = $this->db->fetchOne($select);
+	    
+	    return $result;
+	}
 	/**
-	* get coment reply by coment id
+	* get coment reply by comment id
 	*/
 	public function getCommentReplytByCommentId($id)
 	{

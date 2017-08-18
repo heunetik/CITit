@@ -8,7 +8,7 @@ span.post {
     <!-- <p><strong>{ARTICLE_ID}</strong></p> -->
     <a href="{SET_BY_TYPE}"><strong>{ARTICLE_TITLE}</strong></a>
     <div style="position: relative">
-        <a href="{SITE_URL}/article/show_article_content/id/{ARTICLE_ID}"><span class="post">comments</span></a>
+        <a href="{SITE_URL}/article/show_article_content/id/{ARTICLE_ID}"><span class="post">{ARTICLE_COMMENTCOUNT} comments</span></a>
         <span class="post"></span>
         <span class="post"></span>
     </div>
@@ -17,4 +17,6 @@ span.post {
 </div>
 <hr>
 <!-- END article_list -->
+<a href="{SITE_URL}/article/add"><span class="button">Add post</a>
+<hr>
 <p>TOTAL POSTS: {POST_COUNT}</p>

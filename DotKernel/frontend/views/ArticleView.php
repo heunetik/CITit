@@ -89,16 +89,23 @@ class Article_View extends View
         $this->tpl->setBlock('comment_display','comment_replyToComment','comment_replyToComment_block');
         $this->tpl->setBlock('comment_reply','reply_controls','reply_controls_block');
 
+        $extensions = ['.jpg', '.jpeg', '.png', '.gif'];
+        
         foreach($data as $key => $value) {
             if($key == 'date') {
                 $value = date('Y - m - d', strtotime($value));
             }
             if($key == 'type' && $value == 1) {
 
-                $ok = preg_match("/(http\:\/\/imgur\.com\/)(.+)/", $data['content'], $toUse);
+                $ok = preg_match("/(http\:\/\/(i\.)?imgur\.com\/)(.+)/", $data['content'], $toUse);
                 if($ok) {
                     if($toUse[1] == "http://imgur.com/") {
-                        $this->tpl->setVar('ARTICLE_CONTENT', '<blockquote class="imgur-embed-pub" lang="en" data-id="'.$toUse[2].'"><a href="http://imgur.com/a/'.$toUse[2].'">Never give up</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>');
+                        $toUse[3] = str_replace('gallery/','a/', $toUse[3]);
+                        $this->tpl->setVar('ARTICLE_CONTENT', '<blockquote class="imgur-embed-pub" lang="en" data-id="'.$toUse[3].'"><a href="http://imgur.com/a/'.$toUse[3].'"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>');
+                    } else {
+                        $toUse[3] = str_replace($extensions,'', $toUse[3]);
+                        $this->tpl->setVar('ARTICLE_CONTENT', '<blockquote class="imgur-embed-pub" lang="en" data-id="'.$toUse[3].'"><a href="//imgur.com/'.$toUse[3].'"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>');
+
                     }
                 } else {
                     $this->tpl->setVar('ARTICLE_CONTENT','<a href="http://'.$data['content'].'">'.$data['content'].'</a>');
@@ -117,7 +124,13 @@ class Article_View extends View
 
             $this->tpl->setVar('COMMENT_USERID',$comment['username']);
             $this->tpl->setVar('COMMENT_ID',$commentKey);
-            $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
+            $valid = Zend_Uri::check($comment['content']);
+            if($valid == true) {
+                $this->tpl->setVar('COMMENT_CONTENT',"<a href=" . $comment['content'] . ">" . $comment['content'] . "</a>");
+            } else {
+                $this->tpl->setVar('COMMENT_CONTENT',$comment['content']);
+            }
+            
             if(isset($this->session->user->id)) {
                 $this->tpl->parse('comment_replyToComment_block','comment_replyToComment',false);
                 if ($comment['userId'] == $this->session->user->id) {
@@ -136,7 +149,12 @@ class Article_View extends View
                 foreach($comment['replies'] as $replyKey => $reply) {
                     $this->tpl->setVar('REPLY_USERNAME',$reply['username']);
                     $this->tpl->setVar('REPLY_ID',$reply['id']);
-                    $this->tpl->setVar('REPLY_CONTENT',$reply['content']);
+                    $valid = Zend_Uri::check($reply['content']);
+                    if($valid == true) {
+                        $this->tpl->setVar('REPLY_CONTENT',"<a href=" . $reply['content'] . ">" . $reply['content'] . "</a>");
+                    } else {
+                        $this->tpl->setVar('REPLY_CONTENT',$reply['content']);
+                    }
                     if(isset($this->session->user->id)) {
                         if ($reply['userId'] == $this->session->user->id) {
                             $this->tpl->setVar('REPLY_ID',$reply['id']);
