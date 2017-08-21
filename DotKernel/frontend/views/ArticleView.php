@@ -161,10 +161,10 @@ class Article_View extends View
                         $this->tpl->setVar('REPLY_CONTENT',$reply['content']);
                     }
                     if(isset($this->session->user->id)) {
+                        $this->tpl->parse('reply_like_controls_block','reply_like_controls',false);
                         if ($reply['userId'] == $this->session->user->id) {
                             $this->tpl->setVar('REPLY_ID',$reply['id']);
                             $this->tpl->parse('reply_controls_block','reply_controls',false);
-                            $this->tpl->parse('reply_like_controls_block','reply_like_controls',false);
                         } else {
                             $this->tpl->setVar('REPLY_ID','');
                             $this->tpl->parse('reply_controls_block','',false);
