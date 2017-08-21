@@ -69,6 +69,8 @@ header { height: 140px; width:100%; background-color: #cee3f8;}
 #wrapper { width: 100%; background-color: white; min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -100px; }
 #push, footer { height:100px; }
 footer { background-color:#EEF2F5; width:100%; }
+a.menuStuff { font-family: 'Fredoka One', cursive !important; font-size: 18px !important; }
+li { font-family: 'Righteous', cursive !important; }
 
 /****** Logo *********/
 #logo { font-size:26px; margin-top: 45px; float:left; }
@@ -94,9 +96,12 @@ nav#sidebar ul.menu_sidebar li.selected a { font-weight:bold; font-size:14.5px; 
 /****** Content ****/
 div#content { width: 100%; float: right; }
 div#content p { padding: 10px 10px 25px 0px; }
-h1, h2 { color: #404D79; }
+h1, h2 { font-family: 'Fredoka One', cursive !important; color: #404D79; }
 h1 { font-size: 24px; margin-bottom: 20px; }
 h2 { font-size: 16px; }
+h1.post, h2.post { font-family: 'Teko', sans-serif !important; }
+h1.post { font-size: 28px; }
+h2.post { font-size: 48px; }
 
 /****** Footer ******/
 footer ul { padding: 25px 0 35px; margin-left: 0; }

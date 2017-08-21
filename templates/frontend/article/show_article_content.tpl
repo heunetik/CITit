@@ -20,7 +20,7 @@ textarea {
 }
 </style>
 <div style="font-size: 16px">
-    <h2>{ARTICLE_TITLE}</h2>
+    <h2 class="post">{ARTICLE_TITLE}</h2>
     <hr>
     <p>{ARTICLE_CONTENT}</p>
     <span style="font-size: 12px; float: right">{ARTICLE_DATE}</span>
@@ -36,7 +36,7 @@ textarea {
 </div>
 <!-- END comment_submit -->
 <hr>
-    <h1>Comments:</h1>
+    <h1 class="post">Comments:</h1>
 <div id="commentDiv">
     <!-- BEGIN comment_display -->
     <div id="comment_{COMMENT_ID}">
