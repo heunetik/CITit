@@ -85,12 +85,16 @@ class Article_View extends View
         $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
         $this->tpl->setBlock('tpl_main','comment_submit','comment_submit_block');
         $this->tpl->setBlock('comment_display','comment_reply','comment_reply_block');
+        $this->tpl->setBlock('comment_display','comment_like_controls','comment_like_controls_block');
         $this->tpl->setBlock('comment_display','comment_controls','comment_controls_block');
         $this->tpl->setBlock('comment_display','comment_replyToComment','comment_replyToComment_block');
         $this->tpl->setBlock('comment_reply','reply_controls','reply_controls_block');
+        $this->tpl->setBlock('comment_reply','reply_like_controls','reply_like_controls_block');
+
+
 
         $extensions = ['.jpg', '.jpeg', '.png', '.gif'];
-        
+
         foreach($data as $key => $value) {
             if($key == 'date') {
                 $value = date('Y - m - d', strtotime($value));
@@ -121,7 +125,6 @@ class Article_View extends View
         }
 
         foreach ($commentData as $commentKey => $comment) {
-
             $this->tpl->setVar('COMMENT_USERID',$comment['username']);
             $this->tpl->setVar('COMMENT_ID',$commentKey);
             $valid = Zend_Uri::check($comment['content']);
@@ -133,6 +136,7 @@ class Article_View extends View
             
             if(isset($this->session->user->id)) {
                 $this->tpl->parse('comment_replyToComment_block','comment_replyToComment',false);
+                $this->tpl->parse('comment_like_controls_block','comment_like_controls',false);
                 if ($comment['userId'] == $this->session->user->id) {
                     $this->tpl->setVar('COMMENT_ID',$commentKey);
                     $this->tpl->parse('comment_controls_block','comment_controls',false);
@@ -149,6 +153,7 @@ class Article_View extends View
                 foreach($comment['replies'] as $replyKey => $reply) {
                     $this->tpl->setVar('REPLY_USERNAME',$reply['username']);
                     $this->tpl->setVar('REPLY_ID',$reply['id']);
+                    $this->tpl->setVar('REPLY_LIKE_COUNT',$reply['likeCount']);
                     $valid = Zend_Uri::check($reply['content']);
                     if($valid == true) {
                         $this->tpl->setVar('REPLY_CONTENT',"<a href=" . $reply['content'] . ">" . $reply['content'] . "</a>");
@@ -159,6 +164,7 @@ class Article_View extends View
                         if ($reply['userId'] == $this->session->user->id) {
                             $this->tpl->setVar('REPLY_ID',$reply['id']);
                             $this->tpl->parse('reply_controls_block','reply_controls',false);
+                            $this->tpl->parse('reply_like_controls_block','reply_like_controls',false);
                         } else {
                             $this->tpl->setVar('REPLY_ID','');
                             $this->tpl->parse('reply_controls_block','',false);

@@ -42,7 +42,9 @@ switch ($registry->requestAction)
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			$uidFromSession = $session->user->id;
-
+			if (isset($_POST['action']) && $uidFromSession != 0) {
+				$articleModel->handleLikeDislikeRequests($_POST['action'], $_POST['id'], $_POST['state'], $uidFromSession);
+			}
 			if (isset($_POST['id']) && !empty($_POST['id'])) {
 				$postId = (int)$_POST['id'];
 				$commentAuthorId = $articleModel->checkCommentPosterByCommentId($postId);

@@ -18,6 +18,33 @@ textarea {
     border: 1px solid;
     box-shadow:1px 1px 3px #888;
 }
+.likeDislikeComm {
+    display: block;
+    height: 14px;
+    width: 14px;
+    padding: 3px 0px;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+.likeDislikeRep {
+    display: block;
+    height: 10px;
+    width: 10px;
+    padding: 3px 0px;
+    margin-right: 10px;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+.wrap {
+  display: flex;
+  align-items: baseline;
+}
+.leftD {
+  flex: 0 0 5%;
+}
+.rightD {
+  flex: 1;
+}
 </style>
 <div style="font-size: 16px">
     <h2 class="post">{ARTICLE_TITLE}</h2>
@@ -43,6 +70,14 @@ textarea {
         <hr size="10">
             <div id="append{COMMENT_ID}">
                 <div id="appendTo{COMMENT_ID}">
+                    <!-- BEGIN comment_like_controls -->
+                    <div style='float: left; padding: 10px' id="likebox{COMMENT_ID}">
+                        <img src='/CITit/images/frontend/up.png' value='like' on='0' id="like{COMMENT_ID}" class='likeDislikeComm'>
+                        <span>count</span>
+                        <img src='/CITit/images/frontend/down.png' value='dislike' on='0' id="dislike{COMMENT_ID}" class='likeDislikeComm'>
+                    </div>
+                    <br>
+                    <!-- END comment_like_controls -->
                     <strong class="{COMMENT_ID}">{COMMENT_USERID} : </strong>
                     <br>
                     <span style="padding: 0px 20px;"  id="content{COMMENT_ID}" class="{COMMENT_ID}">{COMMENT_CONTENT}</span>
@@ -51,6 +86,7 @@ textarea {
                         <button id="edit{COMMENT_ID}" onclick="editComment({COMMENT_ID})">Edit</button>
                         <button id="delete{COMMENT_ID}" onclick="deleteComment({COMMENT_ID})">Delete</button>
                     </span>
+                    <br>
                     <span id="save{COMMENT_ID}"></span>
                     <!-- END comment_controls -->
                     <!-- BEGIN comment_replyToComment -->
@@ -63,19 +99,30 @@ textarea {
                 replies:
                 <br>
                 <!-- BEGIN comment_reply -->
-                    <div style="padding-left: 3%; margin: 7px">
-                        <strong>-</strong>
-                        <strong class="{REPLY_ID}">{REPLY_USERNAME} : </strong>
-                        <span style="padding: 0px 20px;" class="{REPLY_ID}" id="content{REPLY_ID}">{REPLY_CONTENT}</span>
-                        <!-- BEGIN reply_controls -->
-                        <span>
-                        <span>
-                            <button id="edit{REPLY_ID}" onclick="editComment({REPLY_ID})">Edit</button>
-                        <button id="delete{REPLY_ID}" onclick="deleteComment({REPLY_ID})">Delete</button>
-                        </span>
-                        <!-- END reply_controls -->
+                    <div class='wrap' style="padding-left: 3%; margin: 7px">
+                        <!-- BEGIN reply_like_controls -->
                         <br>
-                        <span id="save{REPLY_ID}"></span>
+                        <div class='leftD' id="likebox{COMMENT_ID}">
+                            <img src='/CITit/images/frontend/up.png' value='like' on='0' id="like{REPLY_ID}reply" class='likeDislikeRep'>
+                            <span>{REPLY_LIKE_COUNT}</span>
+                            <img src='/CITit/images/frontend/down.png' value='dislike' on='0' id="dislike{REPLY_ID}reply" class='likeDislikeRep'>
+                        </div>
+                        <br>
+                        <!-- END reply_like_controls -->
+                        <div class='rightD'>
+                            <strong class="{REPLY_ID}">- {REPLY_USERNAME} : </strong>
+                            
+                            <span style="padding: 0px 20px;" class="{REPLY_ID}" id="content{REPLY_ID}">{REPLY_CONTENT}</span>
+                            <!-- BEGIN reply_controls -->
+                            <span>
+                            <span>
+                                <button id="edit{REPLY_ID}" onclick="editComment({REPLY_ID})">Edit</button>
+                                <button id="delete{REPLY_ID}" onclick="deleteComment({REPLY_ID})">Delete</button>
+                            </span>
+                            <br>
+                            <span id="save{REPLY_ID}"></span>
+                            <!-- END reply_controls -->
+                        </div>
                     </div>
                 <!-- END comment_reply -->
             </div>
@@ -84,6 +131,72 @@ textarea {
     <!-- END comment_display -->
 </div>
 <script>
+$(document).ready(function(){
+    $('img.likeDislikeComm').click(function(e) {
+        e.preventDefault();
+        // alert($(this).attr('value'));
+        // alert($(this).attr('id'));
+        var idsep = $(this).attr('id');
+        var returnedArray = idsep.match(/(.+?)(\d.+)/);
+        voteRequest(returnedArray[1], returnedArray[2]);
+    });
+    $('img.likeDislikeRep').click(function(e) {
+        e.preventDefault();
+        // alert($(this).attr('value'));
+        // alert($(this).attr('id'));
+        var idsep = $(this).attr('id');
+        var returnedArray = idsep.match(/(.+?)(\d.+?)(\D.+)/);
+        voteRequest(returnedArray[1], returnedArray[2], returnedArray[3]);
+    });
+});
+
+function voteRequest(action, id, type = '')
+{
+    // alert(action);
+    // alert(id);
+    var opposite = '';
+    var onOff = $('#' + action + id + type).attr('on');
+    // alert(onOff);
+    if (action == 'like') {
+        opposite = 'dislike';
+    } else {
+        opposite = 'like';        
+    }
+
+    if (action == 'like' || action == 'dislike') {
+        toSend = {
+            'action' : action,
+            'id' : id,
+            'state' : onOff
+        };
+        $.ajax({
+            // url: voteRequestUrl,
+            type: 'POST',
+            data: toSend,
+            success: function (ajaxResponse) {
+                // ajaxResponse = JSON.parse(ajaxResponse);
+                id = id + type;
+                if($('#' + action + id).css('filter') == 'grayscale(1)') {
+                    if($('#' + opposite + id).css('filter') == 'grayscale(1)') {
+                        $('#' + action + id).css('filter','grayscale(0)');
+                        $('#' + action + id).attr('on','1');
+                    } else {
+                        $('#' + action + id).css('filter','grayscale(0)');
+                        $('#' + action + id).attr('on','1');
+                        $('#' + opposite + id).css('filter','grayscale(1)');
+                        $('#' + opposite + id).attr('on','0');
+                    }
+                } else {
+                    $('#' + action + id).css('filter','grayscale(1)');
+                    $('#' + action + id).attr('on','0');
+                }
+            }
+        });
+    } else {
+        alert('!');
+    }
+}
+
 function deleteComment(id)
 {
     if (confirm("Are you sure you want to delete the comment?")) {

@@ -72,15 +72,15 @@ class Article extends Dot_Model_User
 
 		foreach ($comments as $key => $value) {
 			$replies = $this->getCommentReplytByCommentId($value['id']);
-			$comepletedData[$value['id']]['content'] = $value['content'];
-			$comepletedData[$value['id']]['userId'] = $value['userId'];
-			$comepletedData[$value['id']]['username'] = $value['username'];
+			$completedData[$value['id']]['content'] = $value['content'];
+			$completedData[$value['id']]['userId'] = $value['userId'];
+			$completedData[$value['id']]['username'] = $value['username'];
 			if(isset($replies) && !empty($replies))
 			{
-				$comepletedData[$value['id']]['replies'] = $replies;
+				$completedData[$value['id']]['replies'] = $replies;
 			}
 		}
-		return $comepletedData;
+		return $completedData;
 	}
 
 
@@ -96,7 +96,6 @@ class Article extends Dot_Model_User
 	                    ->where('parent = ?', $defaultParentId)
 	                    ->join('user','user.id = comment.userId','user.username');
 	    $result = $this->db->fetchAll($select);
-	    
 	    return $result;
 	}
 
@@ -112,7 +111,7 @@ class Article extends Dot_Model_User
 	    return $result;
 	}
 	/**
-	* get coment reply by comment id
+	* get comment reply by comment id
 	*/
 	public function getCommentReplytByCommentId($id)
 	{
@@ -121,8 +120,12 @@ class Article extends Dot_Model_User
 	                    ->where('parent = ?', $id)
 	                    ->join('user','user.id = comment.userId','username');
 	    $result = $this->db->fetchAll($select);
-
-	    return $result;
+	    $finished = [];
+		foreach($result as $key => $inner) {
+			$inner['likeCount'] = $this->countLikesDislikes((int)$inner['id']);
+			$finished[$key] = $inner;
+		}
+	    return $finished;
 	}
 
 	public function deleteCommentById($id)
@@ -178,5 +181,106 @@ class Article extends Dot_Model_User
     public function addNewPostToDatabase($data)
     {
     	$this->db->insert('article', $data);
+    }
+
+    public function countLikesDislikes($commentId)
+    {
+    	$select = $this->db->select()
+	                    // ->from('comment')
+	                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
+	                    ->where('postId = ?', $commentId)
+	                    ->where('rating = ?', 1);
+	    $upvote = $this->db->fetchOne($select);
+
+	    $select = $this->db->select()
+	                    // ->from('comment')
+	                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
+	                    ->where('postId = ?', $commentId)
+	                    ->where('rating = ?', -1);
+	    $downvote = $this->db->fetchOne($select);
+
+	    return $upvote - $downvote;
+    }
+
+    public function handleLikeDislikeRequests($action, $id, $state, $user)
+    {
+    	$select = $this->db->select()
+							->from('commentRating')
+							->where('postId = ?', $id)
+							->where('userId = ?', $user);
+		$exists = $this->db->fetchOne($select);
+		if($exists != false) {
+	    	if($state == 1) {
+	    		switch($action) {
+			        case 'like':
+			        	$dataVar = [
+				    		'rating' => 0
+				    	];
+				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+			            break;
+			        case 'dislike':
+			        	$dataVar = [
+				    		'rating' => 0
+				    	];
+				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+			            break;
+			    }
+	    	} else if ($state == 0) {
+	    		switch($action) {
+			        case 'like':
+			        	$dataVar = [
+				    		'rating' => 1
+				    	];
+				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+			            break;
+			        case 'dislike':
+			        	$dataVar = [
+				    		'rating' => -1
+				    	];
+				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+			            break;
+			    }
+	    	}
+	    } else {
+	    	if($state == 1) {
+	    		switch($action) {
+			        case 'like':
+			        	$dataVar = [
+			        		'postId' => $id,
+				    		'userId' => $user,
+				    		'rating' => 0
+				    	];
+				    	$this->db->insert('commentRating', $dataVar);
+			            break;
+			        case 'dislike':
+			        	$dataVar = [
+			        		'postId' => $id,
+				    		'userId' => $user,
+				    		'rating' => 0
+				    	];
+				    	$this->db->insert('commentRating', $dataVar);
+			            break;
+			    }
+	    	} else if ($state == 0) {
+	    		switch($action) {
+			        case 'like':
+			        	$dataVar = [
+			        		'postId' => $id,
+				    		'userId' => $user,
+				    		'rating' => 1
+				    	];
+				    	$this->db->insert('commentRating', $dataVar);
+			            break;
+			        case 'dislike':
+			        	$dataVar = [
+			        		'postId' => $id,
+				    		'userId' => $user,
+				    		'rating' => -1
+				    	];
+				    	$this->db->insert('commentRating', $dataVar);
+			            break;
+			    }
+	    	}
+	    }
     }
 }
