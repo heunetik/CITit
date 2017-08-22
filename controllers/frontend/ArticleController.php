@@ -32,9 +32,13 @@ switch ($registry->requestAction)
 
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
 		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
+
+		if(isset($session->user->id) && !empty($session->user->id)) {
+			$likedCommentsOnAccessedArticle = $articleModel->returnCommentsLikedByUserOnArticle($session->user->id,$registry->request['id']);
+		}
 		
 		if($articleData != 0) {
-			$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply);
+			$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply, $likedCommentsOnAccessedArticle);
 		} else {
 			header('location: '.$registry->configuration->website->params->url.'/show_articles');
 			exit;
@@ -44,7 +48,10 @@ switch ($registry->requestAction)
 
 			$uidFromSession = $session->user->id;
 			if (isset($_POST['action']) && $uidFromSession != 0) {
-				$articleModel->handleLikeDislikeRequests($_POST['action'], $_POST['id'], $_POST['state'], $uidFromSession);
+				$articleModel->handleLikeDislikeRequests($_POST['action'], $_POST['id'], $_POST['state'], $uidFromSession, $registry->request['id']);
+				$newLikeNumber = $articleModel->countLikesDislikes($_POST['id']);
+				echo json_encode(['newLikeNumber' => $newLikeNumber]);
+				exit;
 			}
 			if (isset($_POST['id']) && !empty($_POST['id'])) {
 				$postId = (int)$_POST['id'];

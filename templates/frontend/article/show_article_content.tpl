@@ -23,8 +23,6 @@ textarea {
     height: 14px;
     width: 14px;
     padding: 3px 0px;
-    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-    filter: grayscale(100%);
 }
 .likeDislikeRep {
     display: block;
@@ -32,8 +30,8 @@ textarea {
     width: 10px;
     padding: 3px 0px;
     margin-right: 10px;
-    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-    filter: grayscale(100%);
+    -webkit-filter: grayscale(1); /* Safari 6.0 - 9.0 */
+    filter: grayscale(1);
 }
 .wrap {
   display: flex;
@@ -72,9 +70,9 @@ textarea {
                 <div id="appendTo{COMMENT_ID}">
                     <!-- BEGIN comment_like_controls -->
                     <div style='float: left; padding: 10px' id="likebox{COMMENT_ID}">
-                        <img src='/CITit/images/frontend/up.png' value='like' on='0' id="like{COMMENT_ID}" class='likeDislikeComm'>
+                        <img src='/CITit/images/frontend/up.png' style='{COMMENT_LIKE_STYLE_UP}' value='like' on='{COMMENT_LIKE_ON_UP}' id="like{COMMENT_ID}" class='likeDislikeComm'>
                         <span>{COMMENT_LIKE_COUNT}</span>
-                        <img src='/CITit/images/frontend/down.png' value='dislike' on='0' id="dislike{COMMENT_ID}" class='likeDislikeComm'>
+                        <img src='/CITit/images/frontend/down.png' style='{COMMENT_LIKE_STYLE_DOWN}' value='dislike' on='{COMMENT_LIKE_ON_DOWN}' id="dislike{COMMENT_ID}" class='likeDislikeComm'>
                     </div>
                     <br>
                     <!-- END comment_like_controls -->
@@ -102,10 +100,10 @@ textarea {
                     <div class='wrap' style="padding-left: 3%; margin: 7px">
                         <!-- BEGIN reply_like_controls -->
                         <br>
-                        <div class='leftD' id="likebox{COMMENT_ID}">
-                            <img src='/CITit/images/frontend/up.png' value='like' on='0' id="like{REPLY_ID}reply" class='likeDislikeRep'>
+                        <div class='leftD' id="likebox{REPLY_ID}">
+                            <img src='/CITit/images/frontend/up.png' style='{REPLY_LIKE_STYLE_UP}' value='like' on='{REPLY_LIKE_ON_UP}' id="like{REPLY_ID}reply" class='likeDislikeRep'>
                             <span>{REPLY_LIKE_COUNT}</span>
-                            <img src='/CITit/images/frontend/down.png' value='dislike' on='0' id="dislike{REPLY_ID}reply" class='likeDislikeRep'>
+                            <img src='/CITit/images/frontend/down.png' style='{REPLY_LIKE_STYLE_DOWN}' value='like' on='{REPLY_LIKE_ON_DOWN}' id="dislike{REPLY_ID}reply" class='likeDislikeRep'>
                         </div>
                         <br>
                         <!-- END reply_like_controls -->
@@ -173,7 +171,9 @@ function voteRequest(action, id, type = '')
             type: 'POST',
             data: toSend,
             success: function (ajaxResponse) {
-                // ajaxResponse = JSON.parse(ajaxResponse);
+                ajaxResponse = JSON.parse(ajaxResponse);
+                // alert(ajaxResponse.newLikeNumber);
+                $( "div#likebox" + id + " > span" ).html(ajaxResponse.newLikeNumber);
                 id = id + type;
                 if($('#' + action + id).css('filter') == 'grayscale(1)') {
                     if($('#' + opposite + id).css('filter') == 'grayscale(1)') {
@@ -192,7 +192,7 @@ function voteRequest(action, id, type = '')
             }
         });
     } else {
-        alert('!');
+        alert(action);
     }
 }
 
@@ -253,7 +253,17 @@ function submitComment()
             data: commentData,
             success: function (data) {
                 data = JSON.parse(data);
-                $("#commentDiv").prepend('<div id="comment_'+data.lastCommId+'"><hr size="10"><div id="append'+data.lastCommId+'"><div id="appendTo'+data.lastCommId+'"><strong class="'+data.lastCommId+'">'+data.username+' : </strong><br><span style="padding: 0px 20px;"  id="content'+data.lastCommId+'" class="'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN comment_controls --><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><span id="save'+data.lastCommId+'"></span><!-- END comment_controls --><!-- BEGIN comment_replyToComment --><div id="appendReplyTo'+data.lastCommId+'" style="display: inline-block"><button id="reply'+data.lastCommId+'" onclick="replyToCommentById('+data.lastCommId+')">Reply</button></div><!-- END comment_replyToComment --></div><br><hr>');
+                $("#commentDiv").prepend('<div id="comment_'+data.lastCommId+'"><hr size="10"><div id="append'+data.lastCommId+'"><div id="appendTo'+data.lastCommId+'"><!-- BEGIN comment_like_controls --><div style="float: left; padding: 10px" id="likebox'+data.lastCommId+'"><img src="/CITit/images/frontend/up.png" style="filter: grayscale(1)" value="like" on="0" id="like'+data.lastCommId+'" class="likeDislikeComm"><span>0</span><img src="/CITit/images/frontend/down.png" style="filter: grayscale(1)" value="dislike" on="0" id="dislike'+data.lastCommId+'" class="likeDislikeComm"></div><br><!-- END comment_like_controls --><strong class="'+data.lastCommId+'">'+data.username+' : </strong><br><span style="padding: 0px 20px;"  id="content'+data.lastCommId+'" class="'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN comment_controls --><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><br><span id="save'+data.lastCommId+'"></span><!-- END comment_controls --><!-- BEGIN comment_replyToComment --><div id="appendReplyTo'+data.lastCommId+'" style="display: inline-block"><button id="reply'+data.lastCommId+'" onclick="replyToCommentById('+data.lastCommId+')">Reply</button></div><!-- END comment_replyToComment --></div><br>replies:<br></div></div>');
+                $(document).on('click', '#like'+data.lastCommId, function() {
+                    var idsep = $(this).attr('id');
+                    var returnedArray = idsep.match(/(.+?)(\d.+)/);
+                    voteRequest(returnedArray[1], returnedArray[2]);
+                });
+                $(document).on('click', '#dislike'+data.lastCommId, function() {
+                    var idsep = $(this).attr('id');
+                    var returnedArray = idsep.match(/(.+?)(\d.+)/);
+                    voteRequest(returnedArray[1], returnedArray[2]);
+                });
                 fadeStuffByProperty("#content"+data.lastCommId,"green");
                 // $(".fadeThis").css("display","block");
                 $("#newComment").val("");
@@ -263,6 +273,7 @@ function submitComment()
             }
         });
 }
+
 function saveComment(id, mode = 0)
 {
     var commentData = {};

@@ -76,11 +76,12 @@ class Article_View extends View
     Also displays the comment submission form, given
     that the user is signed in.
     */
-    public function showSingleArticle($template = '', $data, $commentData)
+    public function showSingleArticle($template = '', $data, $commentData, $likeData)
     {
         if($template != '') {
             $this->template = $template;
         }
+
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
         $this->tpl->setBlock('tpl_main','comment_display','comment_display_block');
         $this->tpl->setBlock('tpl_main','comment_submit','comment_submit_block');
@@ -101,6 +102,7 @@ class Article_View extends View
             }
             if($key == 'type' && $value == 1) {
 
+                $data['content'] = str_replace('https://','http://', $data['content']);
                 $ok = preg_match("/(http\:\/\/(i\.)?imgur\.com\/)(.+)/", $data['content'], $toUse);
                 if($ok) {
                     if($toUse[1] == "http://imgur.com/") {
@@ -125,6 +127,26 @@ class Article_View extends View
         }
 
         foreach ($commentData as $commentKey => $comment) {
+            // Zend_Debug::dump($commentKey);exit;
+            if(isset($likeData[$commentKey])) {
+                if($likeData[$commentKey] > 0) {
+                    $this->tpl->setVar('COMMENT_LIKE_STYLE_UP','filter: grayscale(0);');
+                    $this->tpl->setVar('COMMENT_LIKE_STYLE_DOWN','filter: grayscale(1);');
+                    $this->tpl->setVar('COMMENT_LIKE_ON_UP','1');
+                    $this->tpl->setVar('COMMENT_LIKE_ON_DOWN','0');
+
+                } else {
+                    $this->tpl->setVar('COMMENT_LIKE_STYLE_UP','filter: grayscale(1);');
+                    $this->tpl->setVar('COMMENT_LIKE_STYLE_DOWN','filter: grayscale(0);');
+                    $this->tpl->setVar('COMMENT_LIKE_ON_UP','0');
+                    $this->tpl->setVar('COMMENT_LIKE_ON_DOWN','1');
+                }
+            } else {
+                $this->tpl->setVar('COMMENT_LIKE_ON_UP','0');
+                $this->tpl->setVar('COMMENT_LIKE_ON_DOWN','0');
+                $this->tpl->setVar('COMMENT_LIKE_STYLE_UP','filter: grayscale(1);');
+                $this->tpl->setVar('COMMENT_LIKE_STYLE_DOWN','filter: grayscale(1);');
+            }
             $this->tpl->setVar('COMMENT_USERID',$comment['username']);
             $this->tpl->setVar('COMMENT_ID',$commentKey);
             $this->tpl->setVar('COMMENT_LIKE_COUNT',$comment['likeCount']);
@@ -152,6 +174,25 @@ class Article_View extends View
             $this->tpl->parse('comment_reply_block','');
             if(isset($comment['replies'])) {
                 foreach($comment['replies'] as $replyKey => $reply) {
+                    if(isset($likeData[$reply['id']])) {
+                        if($likeData[$reply['id']] > 0) {
+                            $this->tpl->setVar('REPLY_LIKE_STYLE_UP','filter: grayscale(0);');
+                            $this->tpl->setVar('REPLY_LIKE_STYLE_DOWN','filter: grayscale(1);');
+                            $this->tpl->setVar('REPLY_LIKE_ON_UP','1');
+                            $this->tpl->setVar('REPLY_LIKE_ON_DOWN','0');
+
+                        } else {
+                            $this->tpl->setVar('REPLY_LIKE_STYLE_UP','filter: grayscale(1);');
+                            $this->tpl->setVar('REPLY_LIKE_STYLE_DOWN','filter: grayscale(0);');
+                            $this->tpl->setVar('REPLY_LIKE_ON_UP','0');
+                            $this->tpl->setVar('REPLY_LIKE_ON_DOWN','1');
+                        }
+                    } else {
+                        $this->tpl->setVar('REPLY_LIKE_ON_UP','0');
+                        $this->tpl->setVar('REPLY_LIKE_ON_DOWN','0');
+                        $this->tpl->setVar('REPLY_LIKE_STYLE_UP','filter: grayscale(1);');
+                        $this->tpl->setVar('REPLY_LIKE_STYLE_DOWN','filter: grayscale(1);');
+                    }
                     $this->tpl->setVar('REPLY_USERNAME',$reply['username']);
                     $this->tpl->setVar('REPLY_ID',$reply['id']);
                     $this->tpl->setVar('REPLY_LIKE_COUNT',$reply['likeCount']);

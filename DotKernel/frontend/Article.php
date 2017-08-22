@@ -82,7 +82,7 @@ class Article extends Dot_Model_User
 				$completedData[$value['id']]['replies'] = $replies;
 			}
 		}
-		
+
 		return $completedData;
 	}
 
@@ -205,14 +205,30 @@ class Article extends Dot_Model_User
 	    return $upvote - $downvote;
     }
 
-    public function returnCommentsLikedByUser(){}
+    public function returnCommentsLikedByUserOnArticle($userId, $articleId)
+    {
+    	$select = $this->db->select()
+	                    ->from('commentRating',array('id','postId','rating'))
+	                    ->where('rating != ?', 0)
+	                    ->where('userId = ?', $userId)
+	                    ->where('articleId = ?', $articleId);
+	    $return = $this->db->fetchAll($select);
+	    $done = [];
+	    foreach ($return as $separateStuff) {
+	    	$done[$separateStuff['postId']] = $separateStuff['rating'] * $separateStuff['id'];
+	    }
 
-    public function handleLikeDislikeRequests($action, $id, $state, $user)
+	    // Zend_Debug::dump($done);
+	    return $done;
+    }
+
+    public function handleLikeDislikeRequests($action, $id, $state, $user, $articleId)
     {
     	$select = $this->db->select()
 							->from('commentRating')
 							->where('postId = ?', $id)
-							->where('userId = ?', $user);
+							->where('userId = ?', $user)
+							->where('articleId = ?', $articleId);
 		$exists = $this->db->fetchOne($select);
 		if($exists != false) {
 	    	if($state == 1) {
@@ -253,7 +269,8 @@ class Article extends Dot_Model_User
 			        	$dataVar = [
 			        		'postId' => $id,
 				    		'userId' => $user,
-				    		'rating' => 0
+				    		'rating' => 0,
+				    		'articleId' => $articleId
 				    	];
 				    	$this->db->insert('commentRating', $dataVar);
 			            break;
@@ -261,7 +278,8 @@ class Article extends Dot_Model_User
 			        	$dataVar = [
 			        		'postId' => $id,
 				    		'userId' => $user,
-				    		'rating' => 0
+				    		'rating' => 0,
+				    		'articleId' => $articleId
 				    	];
 				    	$this->db->insert('commentRating', $dataVar);
 			            break;
@@ -272,7 +290,8 @@ class Article extends Dot_Model_User
 			        	$dataVar = [
 			        		'postId' => $id,
 				    		'userId' => $user,
-				    		'rating' => 1
+				    		'rating' => 1,
+				    		'articleId' => $articleId
 				    	];
 				    	$this->db->insert('commentRating', $dataVar);
 			            break;
@@ -280,7 +299,8 @@ class Article extends Dot_Model_User
 			        	$dataVar = [
 			        		'postId' => $id,
 				    		'userId' => $user,
-				    		'rating' => -1
+				    		'rating' => -1,
+				    		'articleId' => $articleId
 				    	];
 				    	$this->db->insert('commentRating', $dataVar);
 			            break;
