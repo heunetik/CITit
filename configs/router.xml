@@ -25,6 +25,7 @@
 			<!-- default action for controllers ... -->
 			<frontend>
 				<Page>home</Page>
+				<Article>show_articles</Article>
 				<User>login</User>
 			</frontend>
 			<admin>

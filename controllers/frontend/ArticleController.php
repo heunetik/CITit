@@ -24,6 +24,7 @@ switch ($registry->requestAction)
 {
 	default:
 	case 'show_articles':
+
 		$articleData = $articleModel->getAllArticleData();
 		$articleView->showArticles('show_articles', $articleData);
 		break;

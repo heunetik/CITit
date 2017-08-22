@@ -55,6 +55,5 @@ input[type=checkbox]
             </li>
         </ul>
     </form>
-    <blockquote class="imgur-embed-pub" lang="en" data-id="lX4gFKB"><a href="//imgur.com/lX4gFKB"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
 </div>
 <hr>
