@@ -127,6 +127,7 @@ class Article_View extends View
         foreach ($commentData as $commentKey => $comment) {
             $this->tpl->setVar('COMMENT_USERID',$comment['username']);
             $this->tpl->setVar('COMMENT_ID',$commentKey);
+            $this->tpl->setVar('COMMENT_LIKE_COUNT',$comment['likeCount']);
             $valid = Zend_Uri::check($comment['content']);
             if($valid == true) {
                 $this->tpl->setVar('COMMENT_CONTENT',"<a href=" . $comment['content'] . ">" . $comment['content'] . "</a>");

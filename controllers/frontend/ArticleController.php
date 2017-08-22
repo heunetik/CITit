@@ -32,6 +32,7 @@ switch ($registry->requestAction)
 
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
 		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
+		
 		if($articleData != 0) {
 			$articleView->showSingleArticle('show_article_content', $articleData, $articleCommentAndReply);
 		} else {

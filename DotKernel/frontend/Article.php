@@ -67,7 +67,7 @@ class Article extends Dot_Model_User
 	}
 	public function getCommentByArticleId($id)
 	{
-		$comepletedData = [];
+		$completedData = [];
 		$comments = $this->getComments($id);
 
 		foreach ($comments as $key => $value) {
@@ -75,11 +75,14 @@ class Article extends Dot_Model_User
 			$completedData[$value['id']]['content'] = $value['content'];
 			$completedData[$value['id']]['userId'] = $value['userId'];
 			$completedData[$value['id']]['username'] = $value['username'];
+			$completedData[$value['id']]['likeCount'] = $this->countLikesDislikes($value['id']);
+
 			if(isset($replies) && !empty($replies))
 			{
 				$completedData[$value['id']]['replies'] = $replies;
 			}
 		}
+		
 		return $completedData;
 	}
 
@@ -202,6 +205,8 @@ class Article extends Dot_Model_User
 	    return $upvote - $downvote;
     }
 
+    public function returnCommentsLikedByUser(){}
+
     public function handleLikeDislikeRequests($action, $id, $state, $user)
     {
     	$select = $this->db->select()
@@ -216,13 +221,13 @@ class Article extends Dot_Model_User
 			        	$dataVar = [
 				    		'rating' => 0
 				    	];
-				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+				    	$this->db->update('commentRating', $dataVar, "id = " . $exists);
 			            break;
 			        case 'dislike':
 			        	$dataVar = [
 				    		'rating' => 0
 				    	];
-				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+				    	$this->db->update('commentRating', $dataVar, "id = " . $exists);
 			            break;
 			    }
 	    	} else if ($state == 0) {
@@ -231,13 +236,13 @@ class Article extends Dot_Model_User
 			        	$dataVar = [
 				    		'rating' => 1
 				    	];
-				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+				    	$this->db->update('commentRating', $dataVar, "id = " . $exists);
 			            break;
 			        case 'dislike':
 			        	$dataVar = [
 				    		'rating' => -1
 				    	];
-				    	$this->db->update('commentRating', $dataVar, "postId = " . $id);
+				    	$this->db->update('commentRating', $dataVar, "id = " . $exists);
 			            break;
 			    }
 	    	}

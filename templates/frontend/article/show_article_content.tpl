@@ -73,7 +73,7 @@ textarea {
                     <!-- BEGIN comment_like_controls -->
                     <div style='float: left; padding: 10px' id="likebox{COMMENT_ID}">
                         <img src='/CITit/images/frontend/up.png' value='like' on='0' id="like{COMMENT_ID}" class='likeDislikeComm'>
-                        <span>count</span>
+                        <span>{COMMENT_LIKE_COUNT}</span>
                         <img src='/CITit/images/frontend/down.png' value='dislike' on='0' id="dislike{COMMENT_ID}" class='likeDislikeComm'>
                     </div>
                     <br>
@@ -152,11 +152,10 @@ $(document).ready(function(){
 
 function voteRequest(action, id, type = '')
 {
-    // alert(action);
-    // alert(id);
+
     var opposite = '';
     var onOff = $('#' + action + id + type).attr('on');
-    // alert(onOff);
+
     if (action == 'like') {
         opposite = 'dislike';
     } else {
