@@ -24,18 +24,33 @@ switch ($registry->requestAction)
 {
 	default:
 	case 'show_articles':
-
-		$articleData = $articleModel->getAllArticleData();
+		if(isset($session->user->id) && !empty($session->user->id)) {
+			$articleData = $articleModel->getAllArticleData($session->user->id);
+		} else {
+			$articleData = $articleModel->getAllArticleData();
+		}
 		$articleView->showArticles('show_articles', $articleData);
+
+		if($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+			$uidFromSession = $session->user->id;
+			if (isset($_POST['action']) && $uidFromSession != 0) {
+				$articleModel->handleLikeDislikeRequests($_POST['action'], 0, $_POST['state'], $uidFromSession, $_POST['id']);
+				$newLikeNumber = $articleModel->countLikesDislikes(0,$_POST['id']);
+				echo json_encode(['newLikeNumber' => $newLikeNumber]);
+				exit;
+			}
+		}
 		break;
 
 	case 'show_article_content':
-
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
 		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
 
 		if(isset($session->user->id) && !empty($session->user->id)) {
 			$likedCommentsOnAccessedArticle = $articleModel->returnCommentsLikedByUserOnArticle($session->user->id,$registry->request['id']);
+		} else {
+			$likedCommentsOnAccessedArticle = [];
 		}
 		
 		if($articleData != 0) {

@@ -43,19 +43,33 @@ class Article extends Dot_Model_User
 	 * @param int $id
 	 * @return array
 	 */
-	public function getAllArticleData()
+	public function getAllArticleData($userId = '')
 	{
 		$select = $this->db->select()
 						->from('article');
 		// Zend_Debug::dump($this->db->fetchAll($select));die;
 		$queriedList = $this->db->fetchAll($select);
 		$finished = [];
-		foreach($queriedList as $key => $inner) {
-			$inner['commentCount'] = $this->getCommentCount((int)$inner['id']);
-			$finished[$key] = $inner;
+		if($userId != '') {
+
+			foreach($queriedList as $key => $inner) {
+				$aux = $this->returnLikedArticlesByUserId($userId,$inner['id']);
+				if(isset($aux[$inner['id']])) {
+					$inner['articleRating'] = $aux[$inner['id']];
+				} else {
+					$inner['articleRating'] = 0;
+				}
+				$inner['likeCount'] = $this->countLikesDislikes(0,$inner['id']);
+				$inner['commentCount'] = $this->getCommentCount((int)$inner['id']);
+				$finished[$key] = $inner;
+			}
+		} else {
+			foreach($queriedList as $key => $inner) {
+				$inner['commentCount'] = $this->getCommentCount((int)$inner['id']);
+				$finished[$key] = $inner;
+			}
 		}
 		// Zend_Debug::dump($finished);die;
-
 		return $finished;
 	}
 	public function getSingleArticleData($id)
@@ -186,23 +200,41 @@ class Article extends Dot_Model_User
     	$this->db->insert('article', $data);
     }
 
-    public function countLikesDislikes($commentId)
+    public function countLikesDislikes($commentId, $articleId = '')
     {
-    	$select = $this->db->select()
-	                    // ->from('comment')
-	                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
-	                    ->where('postId = ?', $commentId)
-	                    ->where('rating = ?', 1);
-	    $upvote = $this->db->fetchOne($select);
+    	if($commentId == 0 && $articleId != '') {
+    		$select = $this->db->select()
+		                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
+		                    ->where('articleId = ?', $articleId)
+		                    ->where('postId = ?', 0)
+		                    ->where('rating = ?', 1);
+		    $upvote = $this->db->fetchOne($select);
 
-	    $select = $this->db->select()
-	                    // ->from('comment')
-	                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
-	                    ->where('postId = ?', $commentId)
-	                    ->where('rating = ?', -1);
-	    $downvote = $this->db->fetchOne($select);
+		    $select = $this->db->select()
+		                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
+		                    ->where('articleId = ?', $articleId)
+		                    ->where('postId = ?', 0)
+		                    ->where('rating = ?', -1);
+		    $downvote = $this->db->fetchOne($select);
 
-	    return $upvote - $downvote;
+		    return $upvote - $downvote;
+    	} else {
+			$select = $this->db->select()
+		                    // ->from('comment')
+		                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
+		                    ->where('postId = ?', $commentId)
+		                    ->where('rating = ?', 1);
+		    $upvote = $this->db->fetchOne($select);
+
+		    $select = $this->db->select()
+		                    // ->from('comment')
+		                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
+		                    ->where('postId = ?', $commentId)
+		                    ->where('rating = ?', -1);
+		    $downvote = $this->db->fetchOne($select);
+
+		    return $upvote - $downvote;
+		}
     }
 
     public function returnCommentsLikedByUserOnArticle($userId, $articleId)
@@ -219,6 +251,24 @@ class Article extends Dot_Model_User
 	    }
 
 	    // Zend_Debug::dump($done);
+	    return $done;
+    }
+
+    public function returnLikedArticlesByUserId($userId, $articleId)
+    {
+    	$select = $this->db->select()
+	                    ->from('commentRating',array('id','articleId','rating'))
+	                    ->where('rating != ?', 0)
+	                    ->where('userId = ?', $userId)
+	                    ->where('postId = ?', 0)
+	                    ->where('articleId = ?', $articleId);
+	    $return = $this->db->fetchAll($select);
+	    $done = [];
+	    
+	    foreach ($return as $key => $separateStuff) {
+	    	$done[$separateStuff['articleId']] = $separateStuff['rating'] * $separateStuff['id'];
+	    }
+		// Zend_Debug::dump($done);
 	    return $done;
     }
 

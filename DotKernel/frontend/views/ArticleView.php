@@ -45,6 +45,26 @@ class Article_View extends View
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
         $this->tpl->setBlock('tpl_main','article_list','article_list_block');
         foreach ($data as $separateArticle) {
+            // Zend_Debug::dump($separateArticle);die;
+            if($separateArticle['articleRating'] != 0) {
+                if($separateArticle['articleRating'] > 0) {
+                    $this->tpl->setVar('ARTICLE_LIKE_STYLE_UP','filter: grayscale(0);');
+                    $this->tpl->setVar('ARTICLE_LIKE_STYLE_DOWN','filter: grayscale(1);');
+                    $this->tpl->setVar('ARTICLE_LIKE_ON_UP','1');
+                    $this->tpl->setVar('ARTICLE_LIKE_ON_DOWN','0');
+
+                } else {
+                    $this->tpl->setVar('ARTICLE_LIKE_STYLE_UP','filter: grayscale(1);');
+                    $this->tpl->setVar('ARTICLE_LIKE_STYLE_DOWN','filter: grayscale(0);');
+                    $this->tpl->setVar('ARTICLE_LIKE_ON_UP','0');
+                    $this->tpl->setVar('ARTICLE_LIKE_ON_DOWN','1');
+                }
+            } else {
+                $this->tpl->setVar('ARTICLE_LIKE_ON_UP','0');
+                $this->tpl->setVar('ARTICLE_LIKE_ON_DOWN','0');
+                $this->tpl->setVar('ARTICLE_LIKE_STYLE_UP','filter: grayscale(1);');
+                $this->tpl->setVar('ARTICLE_LIKE_STYLE_DOWN','filter: grayscale(1);');
+            }
             if($separateArticle['type'] == 0) {
                 $this->tpl->setVar('SET_BY_TYPE', "article/show_article_content/id/" . $separateArticle['id']);
             } else {
