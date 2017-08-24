@@ -42,14 +42,16 @@ class Article_View extends View
         if($template != '') {
             $this->template = $template;
         }
+        // var_dump($this->template);exit;
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
         $this->tpl->setBlock('tpl_main','article_list','article_list_block');
         $this->tpl->setBlock('article_list','article_like_controls','article_like_controls_block');
         if(isset($this->session->user->id)) {
-            $this->tpl->parse('article_like_controls_block','article_like_controls',false);
+            $this->tpl->parse('article_like_controls_block','article_like_controls',true);
         } else {
-            $this->tpl->parse('article_like_controls_block','',false);
+            $this->tpl->parse('article_like_controls_block','',true);
         }
+        // $this->tpl->setBlock('article_list','article_like_controls','article_like_controls_block');
         foreach ($data as $separateArticle) {
             if(isset($separateArticle['articleRating'])) {
                 if($separateArticle['articleRating'] != 0) {

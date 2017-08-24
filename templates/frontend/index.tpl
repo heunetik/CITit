@@ -18,6 +18,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Teko" rel="stylesheet">
 	<script src="{SITE_URL}/externals/jquery/jquery.min.js"></script>
 	<script type="text/javascript" src="{TEMPLATES_URL}/js/frontend/main.js"></script>
+	<script type="text/javascript" src="{TEMPLATES_URL}/js/frontend/footerScript.js"></script>
 	<!--[if lt IE 9]>
 	<script src="{TEMPLATES_URL}/js/frontend/html5shim.js"></script>
 	<![endif]-->

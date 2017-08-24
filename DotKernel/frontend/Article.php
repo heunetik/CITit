@@ -43,11 +43,11 @@ class Article extends Dot_Model_User
 	 * @param int $id
 	 * @return array
 	 */
-	public function getAllArticleData($userId = '')
+	public function getAllArticleData($userId = '', $startFrom = 0)
 	{
 		$select = $this->db->select()
-						->from('article');
-		// Zend_Debug::dump($this->db->fetchAll($select));die;
+						->from('article')
+						->limit(10, $startFrom);
 		$queriedList = $this->db->fetchAll($select);
 		$finished = [];
 		if($userId != '') {
@@ -72,6 +72,7 @@ class Article extends Dot_Model_User
 		// Zend_Debug::dump($finished);die;
 		return $finished;
 	}
+
 	public function getSingleArticleData($id)
 	{
 		$select = $this->db->select()
@@ -91,8 +92,7 @@ class Article extends Dot_Model_User
 			$completedData[$value['id']]['username'] = $value['username'];
 			$completedData[$value['id']]['likeCount'] = $this->countLikesDislikes($value['id']);
 
-			if(isset($replies) && !empty($replies))
-			{
+			if(isset($replies) && !empty($replies)) {
 				$completedData[$value['id']]['replies'] = $replies;
 			}
 		}

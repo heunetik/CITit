@@ -24,20 +24,36 @@ switch ($registry->requestAction)
 {
 	default:
 	case 'show_articles':
+
 		if(isset($session->user->id) && !empty($session->user->id)) {
-			$articleData = $articleModel->getAllArticleData($session->user->id);
+			$articleData = $articleModel->getAllArticleData($session->user->id, 0);
 		} else {
-			$articleData = $articleModel->getAllArticleData();
+			$articleData = $articleModel->getAllArticleData('', 0);
 		}
 		$articleView->showArticles('show_articles', $articleData);
 
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$uidFromSession = $session->user->id;
-			if (isset($_POST['action']) && $uidFromSession != 0) {
-				$articleModel->handleLikeDislikeRequests($_POST['action'], 0, $_POST['state'], $uidFromSession, $_POST['id']);
-				$newLikeNumber = $articleModel->countLikesDislikes(0,$_POST['id']);
-				echo json_encode(['newLikeNumber' => $newLikeNumber]);
+			if(isset($_POST['action'])) {
+				$uidFromSession = $session->user->id;
+				if ($uidFromSession != 0) {
+					$articleModel->handleLikeDislikeRequests($_POST['action'], 0, $_POST['state'], $uidFromSession, $_POST['id']);
+					$newLikeNumber = $articleModel->countLikesDislikes(0,$_POST['id']);
+					echo json_encode(['newLikeNumber' => $newLikeNumber]);
+					exit;
+				}
+			}
+			if (isset($_POST['loadMore'])) {
+
+				$articleData = $articleModel->getAllArticleData('', (int)$_POST['loadMore'] * 10);
+				$count = (int)$_POST['loadMore'];
+
+				$send = [
+					'articleData' => $articleData,
+					'count' => $count
+				];
+				echo json_encode($send);
+
 				exit;
 			}
 		}

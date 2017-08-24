@@ -63,21 +63,21 @@ a:hover { color: #D7134F; }
 /****** Layout ******/
 body, html { height:100%; }
 body { background-color: #FFF; }
-header { height: 140px; width:100%; background-color: #cee3f8;}
+header { height: 60px; width:100%; background-color: #cee3f8; position: fixed; z-index: 1; }
 #header-content, #footer-content, #body { width: 90%; margin:0 auto; }
 #body { padding-top:60px; padding-bottom:30px;}
 #wrapper { width: 100%; background-color: white; min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -100px; }
-#push, footer { height:100px; }
-footer { background-color:#EEF2F5; width:100%; }
+#push, footer { height: 25px;}
+footer { background-color: white; width:100%;}
 a.menuStuff { font-family: 'Fredoka One', cursive !important; font-size: 18px !important; }
 li { font-family: 'Righteous', cursive !important; }
 
 /****** Logo *********/
-#logo { font-size:26px; margin-top: 45px; float:left; }
+#logo { font-size:24px; margin-top: 10px; float:left; }
 #logo a { color:#41403B !important; text-decoration:none; }
 
 /****** Top Menu *********/
-ul.menu_top { float:right; margin-top:55px; }
+ul.menu_top { float:right; margin-top:18px; }
 ul.menu_top li { padding: 0px 0px 0 40px; float: left; list-style: none; background-image: url('images/menu_separator.png'); background-repeat: no-repeat; background-position: 12px 2px; }
 ul.menu_top li:first-child { background-image:none; padding-left:none; }
 ul.menu_top li a { color: #464A53; font-size:15px; text-transform: uppercase; text-decoration:none; text-shadow: white 1px 1px 3px; }
@@ -94,7 +94,7 @@ nav#sidebar ul.menu_sidebar li a { text-decoration:none; color: #464A53; font-si
 nav#sidebar ul.menu_sidebar li.selected a { font-weight:bold; font-size:14.5px; }
 
 /****** Content ****/
-div#content { width: 100%; float: right; }
+div#content { width: 100%; float: right;}
 div#content p { padding: 10px 10px 25px 0px; }
 h1, h2 { font-family: 'Fredoka One', cursive !important; color: #404D79; }
 h1 { font-size: 24px; margin-bottom: 20px; }

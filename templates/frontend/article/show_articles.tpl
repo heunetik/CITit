@@ -19,28 +19,29 @@ span.post {
   flex: 1;
 }
 </style>
-<!-- BEGIN article_list -->
-<div style="display:inline-block; width: 100%; margin: 2px 0px;">
-    <!-- <p><strong>{ARTICLE_ID}</strong></p> -->
-    <a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>{ARTICLE_TITLE}</strong></a>
-    <!-- BEGIN article_like_controls -->
-    <div style='float: left; padding: 10px' id="likebox{ARTICLE_ID}">
-        <img src='/CITit/images/frontend/up.png' style='{ARTICLE_LIKE_STYLE_UP}' value='like' on='{ARTICLE_LIKE_ON_UP}' id="like{ARTICLE_ID}" class='likeDislikeArt'>
-        <span>{ARTICLE_LIKECOUNT}</span>
-        <img src='/CITit/images/frontend/down.png' style='{ARTICLE_LIKE_STYLE_DOWN}' value='dislike' on='{ARTICLE_LIKE_ON_DOWN}' id="dislike{ARTICLE_ID}" class='likeDislikeArt'>
+<div id="appendToThis">
+    <!-- BEGIN article_list -->
+    <div style="display:inline-block; width: 100%; margin: 2px 0px;">
+        <!-- <p><strong>{ARTICLE_ID}</strong></p> -->
+        <a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>{ARTICLE_TITLE}</strong></a>
+        <!-- BEGIN article_like_controls -->
+        <div style='float: left; padding: 10px' id="likebox{ARTICLE_ID}">
+            <img src='/CITit/images/frontend/up.png' style='{ARTICLE_LIKE_STYLE_UP}' value='like' on='{ARTICLE_LIKE_ON_UP}' id="like{ARTICLE_ID}" class='likeDislikeArt'>
+            <span>{ARTICLE_LIKECOUNT}</span>
+            <img src='/CITit/images/frontend/down.png' style='{ARTICLE_LIKE_STYLE_DOWN}' value='dislike' on='{ARTICLE_LIKE_ON_DOWN}' id="dislike{ARTICLE_ID}" class='likeDislikeArt'>
+        </div>
+        <br>
+        <!-- END article_like_controls -->
+        <div style="position: relative; margin: 7px 0px">
+            <a href="{SITE_URL}/article/show_article_content/id/{ARTICLE_ID}"><span class="post">{ARTICLE_COMMENTCOUNT} comments</span></a>
+            <span class="post"></span>
+            <span class="post"></span>
+        </div>
     </div>
-    <br>
-    <!-- END article_like_controls -->
-    <div style="position: relative; margin: 7px 0px">
-        <a href="{SITE_URL}/article/show_article_content/id/{ARTICLE_ID}"><span class="post">{ARTICLE_COMMENTCOUNT} comments</span></a>
-        <span class="post"></span>
-        <span class="post"></span>
-    </div>
-    <!-- <p><strong>{ARTICLE_DATE}</strong></p> -->
-    <!-- <a href="{SITE_URL}/article/show_article_content/id/{ARTICLE_ID}">GO TO ARTICLE</a> -->
+    <hr>
+    <!-- END article_list -->
 </div>
-<hr>
-<!-- END article_list -->
+<span id="scrollFromMe">Canyouseeme?</span>
 <a href="{SITE_URL}/article/add"><span class="button">Add post</a>
 <hr>
 <p>TOTAL POSTS: {POST_COUNT}</p>
@@ -102,4 +103,81 @@ function voteRequestArticle(action, id, type = '')
         alert(action);
     }
 }
+
+loadOnScroll();
+
+function isScrolledIntoView(elem)
+{
+    var docViewTop = $(window).scrollTop();
+    var docViewBottom = docViewTop + $(window).height();
+
+    var elemTop = $(elem).offset().top;
+    var elemBottom = elemTop + $(elem).height();
+
+    return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop)) && elem.css( "display" ) != 'none';
+}
+
+
+function loadOnScroll(page)
+{
+    var page = 1;
+    var win = $(window);
+    win.scroll(function(e) {
+        if(isScrolledIntoView($( "#scrollFromMe" ))) {
+            loadMorePosts(page);
+            $('#scrollFromMe').hide();
+            page++;
+        }
+    });
+}
+
+function loadMorePosts(page)
+{
+    toSend = {
+        'loadMore' : page
+    };
+    $.ajax({
+        type: 'POST',
+        data: toSend,
+        success: function (ajaxResponse) {
+
+            ajaxResponse = JSON.parse(ajaxResponse);
+            page = ajaxResponse.count;
+            $(ajaxResponse.articleData).each(function(index, post) {
+                $("#appendToThis").append('<div style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>'+post.title+'</strong></a><div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="/CITit/images/frontend/up.png" style="filter: grayscale(1);" value="like" on="0" id="like'+post.title+'" class="likeDislikeArt"><span>0</span><img src="/CITit/images/frontend/down.png" style="filter: grayscale(1);" value="dislike" on="0" id="dislike'+post.title+'" class="likeDislikeArt"></div><br><div style="position: relative; margin: 7px 0px"><a href="{SITE_URL}/article/show_article_content/id/'+post.id+'"><span class="post">'+post.commentCount+' comments</span></a><span class="post"></span><span class="post"></span></div></div><hr>');
+            });
+            $('#scrollFromMe').show();
+            if(jQuery.isEmptyObject(ajaxResponse.articleData) == true) {
+                $(window).unbind('scroll');
+                $('#scrollFromMe').remove();
+            }
+        }
+    });
+}
+/*
+
+// Each time the user scrolls
+win.scroll(function() {
+    if ($(document).scrollTop() >= ($(document).height() - $(window).height()) * 0.9){
+
+        toSend = {
+            'loadMore' : page
+        };
+        setTimeout(function(){
+            $.ajax({
+                type: 'POST',
+                data: toSend,
+                success: function (ajaxResponse) {
+                    ajaxResponse = JSON.parse(ajaxResponse);
+                    alert(ajaxResponse.count);
+                    page++;
+                    $(ajaxResponse.articleData).each(function(index, post) {
+                        $("#appendToThis").append('<div style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>'+post.title+'</strong></a><div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="/CITit/images/frontend/up.png" style="filter: grayscale(1);" value="like" on="0" id="like'+post.title+'" class="likeDislikeArt"><span>0</span><img src="/CITit/images/frontend/down.png" style="filter: grayscale(1);" value="dislike" on="0" id="dislike'+post.title+'" class="likeDislikeArt"></div><br><div style="position: relative; margin: 7px 0px"><a href="{SITE_URL}/article/show_article_content/id/'+post.id+'"><span class="post">'+post.commentCount+' comments</span></a><span class="post"></span><span class="post"></span></div></div><hr>');
+                    });
+                }
+            });
+        }, 1000);
+    }
+});
+*/
 </script>
