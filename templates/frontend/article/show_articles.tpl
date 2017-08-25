@@ -9,19 +9,23 @@ span.post {
     padding: 3px 0px;
 }
 .wrap {
-  display: flex;
-  align-items: baseline;
+    display: flex;
+    align-items: baseline;
 }
 .leftD {
-  flex: 0 0 5%;
+    flex: 0 0 5%;
 }
 .rightD {
-  flex: 1;
+    flex: 1;
 }
+.singlePost {
+    height: 75px;
+}
+
 </style>
 <div id="appendToThis">
     <!-- BEGIN article_list -->
-    <div style="display:inline-block; width: 100%; margin: 2px 0px;">
+    <div class="singlePost" style="display:inline-block; width: 100%; margin: 2px 0px;">
         <!-- <p><strong>{ARTICLE_ID}</strong></p> -->
         <a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>{ARTICLE_TITLE}</strong></a>
         <!-- BEGIN article_like_controls -->
@@ -44,7 +48,7 @@ span.post {
 <span id="scrollFromMe"></span>
 <a href="{SITE_URL}/article/add"><span class="button">Add post</a>
 <hr>
-<p>TOTAL POSTS: {POST_COUNT}</p>
+<p>LOADED POSTS: <span id="postCount">{POST_COUNT}</span></p>
 
 <script>
 $(document).ready(function(){
@@ -123,11 +127,13 @@ function loadOnScroll(page)
     var page = 1;
     var win = $(window);
     win.scroll(function(e) {
-        if(isScrolledIntoView($( "#scrollFromMe" ))) {
-            loadMorePosts(page);
-            $('#scrollFromMe').hide();
-            page++;
-        }
+        // setTimeout(function() {
+            if(isScrolledIntoView($( "#scrollFromMe" ))) {
+                loadMorePosts(page);
+                $('#scrollFromMe').hide();
+                page++;
+            }
+        // },500);
     });
 }
 
@@ -144,6 +150,7 @@ function loadMorePosts(page)
             ajaxResponse = JSON.parse(ajaxResponse);
             page = ajaxResponse.count;
             var logged = ajaxResponse.logged;
+            $("#postCount").text(parseInt($("#postCount").text())+ajaxResponse.articleData.length);
             $(ajaxResponse.articleData).each(function(index, post) {
                 if(post.articleRating != 0) {
                     if(post.articleRating > 0) {
@@ -174,7 +181,7 @@ function loadMorePosts(page)
                     }
                     theUrl = pref+post.content;
                 }
-                var first = '<div style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="'+theUrl+'" style="font-size: 16px;"><strong>'+post.title+'</strong></a>';
+                var first = '<div class="singlePost" style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="'+theUrl+'" style="font-size: 16px;"><strong>'+post.title+'</strong></a>';
                 var second = '<div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="/CITit/images/frontend/up.png" style="'+styleUp+'" value="like" on="'+likeOnUp+'" id="like'+post.id+'" class="likeDislikeArt"><span>'+post.likeCount+'</span><img src="/CITit/images/frontend/down.png" style="'+styleDown+'" value="dislike" on="'+likeOnDown+'" id="dislike'+post.id+'" class="likeDislikeArt"></div><br>';
                 var third = '<div style="position: relative; margin: 7px 0px"><a href="{SITE_URL}/article/show_article_content/id/'+post.id+'"><span class="post">'+post.commentCount+' comments</span></a><span class="post"></span><span class="post"></span></div></div><hr>';
                 if(logged == 'true') {
