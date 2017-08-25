@@ -44,14 +44,29 @@ switch ($registry->requestAction)
 				}
 			}
 			if (isset($_POST['loadMore'])) {
+				if(isset($session->user->id) && !empty($session->user->id)) {
+					$uidFromSession = $session->user->id;
+					$articleData = $articleModel->getAllArticleData($uidFromSession, (int)$_POST['loadMore'] * 10);
+				} else {
+					$uidFromSession = 0;
+					$articleData = $articleModel->getAllArticleData('', (int)$_POST['loadMore'] * 10);
+				}
 
-				$articleData = $articleModel->getAllArticleData('', (int)$_POST['loadMore'] * 10);
 				$count = (int)$_POST['loadMore'];
 
-				$send = [
-					'articleData' => $articleData,
-					'count' => $count
-				];
+				if ($uidFromSession != 0) {
+					$send = [
+						'articleData' => $articleData,
+						'count' => $count,
+						'logged' => 'true'
+					];
+				} else {
+					$send = [
+						'articleData' => $articleData,
+						'count' => $count,
+						'logged' => 'false'
+					];
+				}
 				echo json_encode($send);
 
 				exit;

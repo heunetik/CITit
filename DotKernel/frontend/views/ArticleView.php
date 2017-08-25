@@ -53,6 +53,7 @@ class Article_View extends View
         }
         // $this->tpl->setBlock('article_list','article_like_controls','article_like_controls_block');
         foreach ($data as $separateArticle) {
+            // Zend_Debug::dump($separateArticle);die;
             if(isset($separateArticle['articleRating'])) {
                 if($separateArticle['articleRating'] != 0) {
                     if($separateArticle['articleRating'] > 0) {

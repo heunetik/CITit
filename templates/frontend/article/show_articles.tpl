@@ -41,7 +41,7 @@ span.post {
     <hr>
     <!-- END article_list -->
 </div>
-<span id="scrollFromMe">Canyouseeme?</span>
+<span id="scrollFromMe"></span>
 <a href="{SITE_URL}/article/add"><span class="button">Add post</a>
 <hr>
 <p>TOTAL POSTS: {POST_COUNT}</p>
@@ -143,9 +143,48 @@ function loadMorePosts(page)
 
             ajaxResponse = JSON.parse(ajaxResponse);
             page = ajaxResponse.count;
+            var logged = ajaxResponse.logged;
+
             $(ajaxResponse.articleData).each(function(index, post) {
-                $("#appendToThis").append('<div style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>'+post.title+'</strong></a><div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="/CITit/images/frontend/up.png" style="filter: grayscale(1);" value="like" on="0" id="like'+post.title+'" class="likeDislikeArt"><span>0</span><img src="/CITit/images/frontend/down.png" style="filter: grayscale(1);" value="dislike" on="0" id="dislike'+post.title+'" class="likeDislikeArt"></div><br><div style="position: relative; margin: 7px 0px"><a href="{SITE_URL}/article/show_article_content/id/'+post.id+'"><span class="post">'+post.commentCount+' comments</span></a><span class="post"></span><span class="post"></span></div></div><hr>');
+                if(post.articleRating != 0) {
+                    if(post.articleRating > 0) {
+                        var styleUp = 'filter: grayscale(0);';
+                        var styleDown = 'filter: grayscale(1);';
+                        var likeOnUp = '1';
+                        var likeOnDown = '0';
+                    } else {
+                        var styleUp = 'filter: grayscale(1);';
+                        var styleDown = 'filter: grayscale(0);';
+                        var likeOnUp = '0';
+                        var likeOnDown = '1';
+                    }
+                } else {
+                    var styleUp = 'filter: grayscale(1);';
+                    var styleDown = 'filter: grayscale(1);';
+                    var likeOnUp = '0';
+                    var likeOnDown = '0';
+                }
+                var first = '<div style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>'+post.title+'</strong></a>';
+                var second = '<div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="/CITit/images/frontend/up.png" style="'+styleUp+'" value="like" on="'+likeOnUp+'" id="like'+post.id+'" class="likeDislikeArt"><span>'+post.likeCount+'</span><img src="/CITit/images/frontend/down.png" style="'+styleDown+'" value="dislike" on="'+likeOnDown+'" id="dislike'+post.id+'" class="likeDislikeArt"></div><br>';
+                var third = '<div style="position: relative; margin: 7px 0px"><a href="{SITE_URL}/article/show_article_content/id/'+post.id+'"><span class="post">'+post.commentCount+' comments</span></a><span class="post"></span><span class="post"></span></div></div><hr>';
+                if(logged == 'true') {
+                    $("#appendToThis").append(first+second+third);
+                    $(document).on('click', '#like'+post.id, function() {
+                        // alert(1);
+                        var idsep = $(this).attr('id');
+                        var returnedArray = idsep.match(/(.+?)(\d.+)/);
+                        voteRequestArticle(returnedArray[1], returnedArray[2]);
+                    });
+                    $(document).on('click', '#dislike'+post.id, function() {
+                        var idsep = $(this).attr('id');
+                        var returnedArray = idsep.match(/(.+?)(\d.+)/);
+                        voteRequestArticle(returnedArray[1], returnedArray[2]);
+                    });
+                } else {
+                    $("#appendToThis").append(first+third);                    
+                }
             });
+            
             $('#scrollFromMe').show();
             if(jQuery.isEmptyObject(ajaxResponse.articleData) == true) {
                 $(window).unbind('scroll');
