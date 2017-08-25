@@ -69,7 +69,6 @@ class Article extends Dot_Model_User
 				$finished[$key] = $inner;
 			}
 		}
-		// Zend_Debug::dump($finished);die;
 		return $finished;
 	}
 
@@ -120,7 +119,6 @@ class Article extends Dot_Model_User
 	{
 		$defaultParentId = 0;
 	    $select = $this->db->select()
-	                    // ->from('comment')
 	                    ->from('comment', array('row_count' => 'COUNT(*)'))
 	                    ->where('postId = ?', $id);
 	    $result = $this->db->fetchOne($select);
@@ -220,14 +218,12 @@ class Article extends Dot_Model_User
 		    return $upvote - $downvote;
     	} else {
 			$select = $this->db->select()
-		                    // ->from('comment')
 		                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
 		                    ->where('postId = ?', $commentId)
 		                    ->where('rating = ?', 1);
 		    $upvote = $this->db->fetchOne($select);
 
 		    $select = $this->db->select()
-		                    // ->from('comment')
 		                    ->from('commentRating', array('row_count' => 'COUNT(*)'))
 		                    ->where('postId = ?', $commentId)
 		                    ->where('rating = ?', -1);
@@ -250,7 +246,6 @@ class Article extends Dot_Model_User
 	    	$done[$separateStuff['postId']] = $separateStuff['rating'] * $separateStuff['id'];
 	    }
 
-	    // Zend_Debug::dump($done);
 	    return $done;
     }
 
@@ -268,7 +263,7 @@ class Article extends Dot_Model_User
 	    foreach ($return as $key => $separateStuff) {
 	    	$done[$separateStuff['articleId']] = $separateStuff['rating'] * $separateStuff['id'];
 	    }
-		// Zend_Debug::dump($done);
+
 	    return $done;
     }
 

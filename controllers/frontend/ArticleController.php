@@ -134,8 +134,7 @@ switch ($registry->requestAction)
 		$uidFromSession = $session->user->id;
 		if($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($uidFromSession) && !empty($uidFromSession))) {
 			$ok = preg_match("/(http\:\/\/|https\:\/\/)/", $_POST['content']);
-			// var_dump($ok);die;
-			// var_dump($_POST['type']);die;
+
 			if(isset($_POST['type']) && !empty($_POST['type'])) {
 				if($_POST['type'] == 'on' && $ok == 0) {
 					$content = 'http://' . trim($_POST['content']);

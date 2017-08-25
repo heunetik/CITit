@@ -42,7 +42,6 @@ class Article_View extends View
         if($template != '') {
             $this->template = $template;
         }
-        // var_dump($this->template);exit;
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
         $this->tpl->setBlock('tpl_main','article_list','article_list_block');
         $this->tpl->setBlock('article_list','article_like_controls','article_like_controls_block');
@@ -51,9 +50,7 @@ class Article_View extends View
         } else {
             $this->tpl->parse('article_like_controls_block','',true);
         }
-        // $this->tpl->setBlock('article_list','article_like_controls','article_like_controls_block');
         foreach ($data as $separateArticle) {
-            // Zend_Debug::dump($separateArticle);die;
             if(isset($separateArticle['articleRating'])) {
                 if($separateArticle['articleRating'] != 0) {
                     if($separateArticle['articleRating'] > 0) {

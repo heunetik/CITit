@@ -20,16 +20,6 @@ input[type=checkbox]
 <h1>New post</h1>
 <br>
 <div>
-    <!-- <form style="display: block" method="POST">
-        <label>Title:</label><input type="text" name="firstname" value="Mickey">
-        <br>
-        <textarea rows="12" cols="80" name="content" placeholder="Put your content here"></textarea>
-        <select>
-          <option value="0">Text</option>
-          <option value="1">Media</option>
-        </select>
-        <input class="button" type="submit" value="Submit">
-    </form> -->
     <form id="userRegister" action="" method="post">
         <ul class="form">
             <li class="clearfix">

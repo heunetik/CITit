@@ -75,12 +75,12 @@ function voteRequestArticle(action, id, type = '')
             'state' : onOff
         };
         $.ajax({
-            // url: voteRequestUrl,
+
             type: 'POST',
             data: toSend,
             success: function (ajaxResponse) {
                 ajaxResponse = JSON.parse(ajaxResponse);
-                // alert(ajaxResponse.newLikeNumber);
+
                 $( "div#likebox" + id + " > span" ).html(ajaxResponse.newLikeNumber);
                 id = id + type;
                 if($('#' + action + id).css('filter') == 'grayscale(1)') {
@@ -184,7 +184,7 @@ function loadMorePosts(page)
                     $("#appendToThis").append(first+third);                    
                 }
             });
-            
+
             $('#scrollFromMe').show();
             if(jQuery.isEmptyObject(ajaxResponse.articleData) == true) {
                 $(window).unbind('scroll');
@@ -193,30 +193,4 @@ function loadMorePosts(page)
         }
     });
 }
-/*
-
-// Each time the user scrolls
-win.scroll(function() {
-    if ($(document).scrollTop() >= ($(document).height() - $(window).height()) * 0.9){
-
-        toSend = {
-            'loadMore' : page
-        };
-        setTimeout(function(){
-            $.ajax({
-                type: 'POST',
-                data: toSend,
-                success: function (ajaxResponse) {
-                    ajaxResponse = JSON.parse(ajaxResponse);
-                    alert(ajaxResponse.count);
-                    page++;
-                    $(ajaxResponse.articleData).each(function(index, post) {
-                        $("#appendToThis").append('<div style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>'+post.title+'</strong></a><div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="/CITit/images/frontend/up.png" style="filter: grayscale(1);" value="like" on="0" id="like'+post.title+'" class="likeDislikeArt"><span>0</span><img src="/CITit/images/frontend/down.png" style="filter: grayscale(1);" value="dislike" on="0" id="dislike'+post.title+'" class="likeDislikeArt"></div><br><div style="position: relative; margin: 7px 0px"><a href="{SITE_URL}/article/show_article_content/id/'+post.id+'"><span class="post">'+post.commentCount+' comments</span></a><span class="post"></span><span class="post"></span></div></div><hr>');
-                    });
-                }
-            });
-        }, 1000);
-    }
-});
-*/
 </script>

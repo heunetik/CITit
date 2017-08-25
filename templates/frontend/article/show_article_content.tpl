@@ -242,7 +242,7 @@ function submitComment()
 {
     var commentData = {};
     var textareaValue = $("#newComment").val();
-    // alert(textareaValue);
+
     commentData = {
                 newComment: 1,
                 parent : 0,
@@ -265,9 +265,7 @@ function submitComment()
                     voteRequest(returnedArray[1], returnedArray[2]);
                 });
                 fadeStuffByProperty("#content"+data.lastCommId,"green");
-                // $(".fadeThis").css("display","block");
                 $("#newComment").val("");
-                // $(".fadeThis").show();
                 $(".fadeThis").css('display','block');
                 $(".fadeThis").fadeOut(3200);
             }
@@ -311,11 +309,9 @@ function saveComment(id, mode = 0)
             data: commentData,
             success: function (data) {
                 data = JSON.parse(data);
-                // alert(data.parent);
                 $(".textarea"+id).replaceWith(function() {
                     return '<span style="padding: 5px" class="fadeThis'+data.lastCommId+' success">Comment submitted!</span>';
                 });
-                // $("#append"+data.parent).append("hello");
                 $("#append"+data.parent).append('<div style="padding-left: 3%; margin: 7px"><strong>-</strong><strong class="'+data.lastCommId+'">'+data.username+' : </strong><span style="padding: 0px 20px;" class="'+data.lastCommId+'" id="content'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN reply_controls --><span><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><!-- END reply_controls --><br><span id="save'+data.lastCommId+'"></span></div>');
                 fadeStuffByProperty("."+data.lastCommId, "green");
                 $(".fadeThis"+data.lastCommId).fadeOut(3200);
