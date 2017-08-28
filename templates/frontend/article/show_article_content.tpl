@@ -44,6 +44,9 @@ textarea {
   flex: 1;
 }
 </style>
+<script type="text/javascript">
+    var siteUrl = "{SITE_URL}";
+</script>
 <div style="font-size: 16px">
     <h2 class="post">{ARTICLE_TITLE}</h2>
     <hr>
@@ -70,9 +73,9 @@ textarea {
                 <div id="appendTo{COMMENT_ID}">
                     <!-- BEGIN comment_like_controls -->
                     <div style='float: left; padding: 10px' id="likebox{COMMENT_ID}">
-                        <img src='/CITit/images/frontend/up.png' style='{COMMENT_LIKE_STYLE_UP}' value='like' on='{COMMENT_LIKE_ON_UP}' id="like{COMMENT_ID}" class='likeDislikeComm'>
+                        <img src='{SITE_URL}/images/frontend/up.png' style='{COMMENT_LIKE_STYLE_UP}' value='like' on='{COMMENT_LIKE_ON_UP}' id="like{COMMENT_ID}" class='likeDislikeComm'>
                         <span>{COMMENT_LIKE_COUNT}</span>
-                        <img src='/CITit/images/frontend/down.png' style='{COMMENT_LIKE_STYLE_DOWN}' value='dislike' on='{COMMENT_LIKE_ON_DOWN}' id="dislike{COMMENT_ID}" class='likeDislikeComm'>
+                        <img src='{SITE_URL}/images/frontend/down.png' style='{COMMENT_LIKE_STYLE_DOWN}' value='dislike' on='{COMMENT_LIKE_ON_DOWN}' id="dislike{COMMENT_ID}" class='likeDislikeComm'>
                     </div>
                     <br>
                     <!-- END comment_like_controls -->
@@ -101,9 +104,9 @@ textarea {
                         <!-- BEGIN reply_like_controls -->
                         <br>
                         <div class='leftD' id="likebox{REPLY_ID}">
-                            <img src='/CITit/images/frontend/up.png' style='{REPLY_LIKE_STYLE_UP}' value='like' on='{REPLY_LIKE_ON_UP}' id="like{REPLY_ID}reply" class='likeDislikeRep'>
+                            <img src='{SITE_URL}/images/frontend/up.png' style='{REPLY_LIKE_STYLE_UP}' value='like' on='{REPLY_LIKE_ON_UP}' id="like{REPLY_ID}reply" class='likeDislikeRep'>
                             <span>{REPLY_LIKE_COUNT}</span>
-                            <img src='/CITit/images/frontend/down.png' style='{REPLY_LIKE_STYLE_DOWN}' value='like' on='{REPLY_LIKE_ON_DOWN}' id="dislike{REPLY_ID}reply" class='likeDislikeRep'>
+                            <img src='{SITE_URL}/images/frontend/down.png' style='{REPLY_LIKE_STYLE_DOWN}' value='like' on='{REPLY_LIKE_ON_DOWN}' id="dislike{REPLY_ID}reply" class='likeDislikeRep'>
                         </div>
                         <br>
                         <!-- END reply_like_controls -->
@@ -253,7 +256,7 @@ function submitComment()
             data: commentData,
             success: function (data) {
                 data = JSON.parse(data);
-                $("#commentDiv").prepend('<div id="comment_'+data.lastCommId+'"><hr size="10"><div id="append'+data.lastCommId+'"><div id="appendTo'+data.lastCommId+'"><!-- BEGIN comment_like_controls --><div style="float: left; padding: 10px" id="likebox'+data.lastCommId+'"><img src="/CITit/images/frontend/up.png" style="filter: grayscale(1)" value="like" on="0" id="like'+data.lastCommId+'" class="likeDislikeComm"><span>0</span><img src="/CITit/images/frontend/down.png" style="filter: grayscale(1)" value="dislike" on="0" id="dislike'+data.lastCommId+'" class="likeDislikeComm"></div><br><!-- END comment_like_controls --><strong class="'+data.lastCommId+'">'+data.username+' : </strong><br><span style="padding: 0px 20px;"  id="content'+data.lastCommId+'" class="'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN comment_controls --><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><br><span id="save'+data.lastCommId+'"></span><!-- END comment_controls --><!-- BEGIN comment_replyToComment --><div id="appendReplyTo'+data.lastCommId+'" style="display: inline-block"><button id="reply'+data.lastCommId+'" onclick="replyToCommentById('+data.lastCommId+')">Reply</button></div><!-- END comment_replyToComment --></div><br>replies:<br></div></div>');
+                $("#commentDiv").prepend('<div id="comment_'+data.lastCommId+'"><hr size="10"><div id="append'+data.lastCommId+'"><div id="appendTo'+data.lastCommId+'"><!-- BEGIN comment_like_controls --><div style="float: left; padding: 10px" id="likebox'+data.lastCommId+'"><img src="'+siteUrl+'/images/frontend/up.png" style="filter: grayscale(1)" value="like" on="0" id="like'+data.lastCommId+'" class="likeDislikeComm"><span>0</span><img src="'+siteUrl+'/images/frontend/down.png" style="filter: grayscale(1)" value="dislike" on="0" id="dislike'+data.lastCommId+'" class="likeDislikeComm"></div><br><!-- END comment_like_controls --><strong class="'+data.lastCommId+'">'+data.username+' : </strong><br><span style="padding: 0px 20px;"  id="content'+data.lastCommId+'" class="'+data.lastCommId+'">'+data.content+'</span><!-- BEGIN comment_controls --><span><button id="edit'+data.lastCommId+'" onclick="editComment('+data.lastCommId+')">Edit</button><button id="delete'+data.lastCommId+'" onclick="deleteComment('+data.lastCommId+')">Delete</button></span><br><span id="save'+data.lastCommId+'"></span><!-- END comment_controls --><!-- BEGIN comment_replyToComment --><div id="appendReplyTo'+data.lastCommId+'" style="display: inline-block"><button id="reply'+data.lastCommId+'" onclick="replyToCommentById('+data.lastCommId+')">Reply</button></div><!-- END comment_replyToComment --></div><br>replies:<br></div></div>');
                 $(document).on('click', '#like'+data.lastCommId, function() {
                     var idsep = $(this).attr('id');
                     var returnedArray = idsep.match(/(.+?)(\d.+)/);
