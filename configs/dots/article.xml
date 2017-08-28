@@ -9,6 +9,10 @@
 					<list>List Page</list>
 				</action>
 			</pageTitle>
+			<infoMessage>
+				<allowed>Succes</allowed>
+				<delete>Article delete </delete>
+			</infoMessage>
 		</variable>
 		<variable option="frontend">
 			<pageTitle>

@@ -49,7 +49,6 @@ $zendLoader = Zend_Loader_Autoloader::getInstance();
 $zendLoader->registerNamespace('Dot_');
 // also load plugin classes
 $zendLoader->registerNamespace('Plugin_');
-
 // getting the request related params
 Dot_Request::setRequestData($_SERVER, $_GET, $_POST);
 
