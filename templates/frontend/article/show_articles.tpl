@@ -23,6 +23,9 @@ span.post {
 }
 
 </style>
+<script type="text/javascript">
+    var siteUrl = "{SITE_URL}";
+</script>
 <div id="appendToThis">
     <!-- BEGIN article_list -->
     <div class="singlePost" style="display:inline-block; width: 100%; margin: 2px 0px;">
@@ -30,9 +33,9 @@ span.post {
         <a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>{ARTICLE_TITLE}</strong></a>
         <!-- BEGIN article_like_controls -->
         <div style='float: left; padding: 10px' id="likebox{ARTICLE_ID}">
-            <img src='/CITit/images/frontend/up.png' style='{ARTICLE_LIKE_STYLE_UP}' value='like' on='{ARTICLE_LIKE_ON_UP}' id="like{ARTICLE_ID}" class='likeDislikeArt'>
+            <img src='{SITE_URL}/images/frontend/up.png' style='{ARTICLE_LIKE_STYLE_UP}' value='like' on='{ARTICLE_LIKE_ON_UP}' id="like{ARTICLE_ID}" class='likeDislikeArt'>
             <span>{ARTICLE_LIKECOUNT}</span>
-            <img src='/CITit/images/frontend/down.png' style='{ARTICLE_LIKE_STYLE_DOWN}' value='dislike' on='{ARTICLE_LIKE_ON_DOWN}' id="dislike{ARTICLE_ID}" class='likeDislikeArt'>
+            <img src='{SITE_URL}/images/frontend/down.png' style='{ARTICLE_LIKE_STYLE_DOWN}' value='dislike' on='{ARTICLE_LIKE_ON_DOWN}' id="dislike{ARTICLE_ID}" class='likeDislikeArt'>
         </div>
         <br>
         <!-- END article_like_controls -->
@@ -182,7 +185,7 @@ function loadMorePosts(page)
                     theUrl = pref+post.content;
                 }
                 var first = '<div class="singlePost" style="display:inline-block; width: 100%; margin: 2px 0px;"><a href="'+theUrl+'" style="font-size: 16px;"><strong>'+post.title+'</strong></a>';
-                var second = '<div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="/CITit/images/frontend/up.png" style="'+styleUp+'" value="like" on="'+likeOnUp+'" id="like'+post.id+'" class="likeDislikeArt"><span>'+post.likeCount+'</span><img src="/CITit/images/frontend/down.png" style="'+styleDown+'" value="dislike" on="'+likeOnDown+'" id="dislike'+post.id+'" class="likeDislikeArt"></div><br>';
+                var second = '<div style="float: left; padding: 10px" id="likebox'+post.id+'"><img src="'+siteUrl+'/images/frontend/up.png" style="'+styleUp+'" value="like" on="'+likeOnUp+'" id="like'+post.id+'" class="likeDislikeArt"><span>'+post.likeCount+'</span><img src="'+siteUrl+'/images/frontend/down.png" style="'+styleDown+'" value="dislike" on="'+likeOnDown+'" id="dislike'+post.id+'" class="likeDislikeArt"></div><br>';
                 var third = '<div style="position: relative; margin: 7px 0px"><a href="{SITE_URL}/article/show_article_content/id/'+post.id+'"><span class="post">'+post.commentCount+' comments</span></a><span class="post"></span><span class="post"></span></div></div><hr>';
                 if(logged == 'true') {
                     $("#appendToThis").append(first+second+third);
