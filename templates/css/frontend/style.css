@@ -63,19 +63,21 @@ a:hover { color: #D7134F; }
 /****** Layout ******/
 body, html { height:100%; }
 body { background-color: #FFF; }
-header { height: 140px; width:100%; background-color: #EEF2F5; }
-#header-content, #footer-content, #body { width: 1000px; margin:0 auto; }
-#body { padding-top:60px; padding-bottom:30px; }
+header { height: 60px; width:100%; background-color: #cee3f8; position: fixed; z-index: 500; }
+#header-content, #footer-content, #body { width: 90%; margin:0 auto; }
+#body { padding-top:60px; padding-bottom:30px;}
 #wrapper { width: 100%; background-color: white; min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -100px; }
-#push, footer { height:100px; }
-footer { background-color:#EEF2F5; width:100%; }
+#push, footer { height: 25px;}
+footer { background-color: white; width:100%;}
+a.menuStuff { font-family: 'Fredoka One', cursive !important; font-size: 18px !important; }
+li { font-family: 'Righteous', cursive !important; }
 
 /****** Logo *********/
-#logo { font-size:26px; margin-top: 45px; float:left; }
+#logo { font-size:24px; margin-top: 10px; float:left; }
 #logo a { color:#41403B !important; text-decoration:none; }
 
 /****** Top Menu *********/
-ul.menu_top { float:right; margin-top:55px; }
+ul.menu_top { float:right; margin-top:18px; }
 ul.menu_top li { padding: 0px 0px 0 40px; float: left; list-style: none; background-image: url('images/menu_separator.png'); background-repeat: no-repeat; background-position: 12px 2px; }
 ul.menu_top li:first-child { background-image:none; padding-left:none; }
 ul.menu_top li a { color: #464A53; font-size:15px; text-transform: uppercase; text-decoration:none; text-shadow: white 1px 1px 3px; }
@@ -92,11 +94,14 @@ nav#sidebar ul.menu_sidebar li a { text-decoration:none; color: #464A53; font-si
 nav#sidebar ul.menu_sidebar li.selected a { font-weight:bold; font-size:14.5px; }
 
 /****** Content ****/
-div#content { width: 700px; float: right; }
+div#content { width: 100%; float: right;}
 div#content p { padding: 10px 10px 25px 0px; }
-h1, h2 { color: #404D79; }
+h1, h2 { font-family: 'Fredoka One', cursive !important; color: #404D79; }
 h1 { font-size: 24px; margin-bottom: 20px; }
 h2 { font-size: 16px; }
+h1.post, h2.post { font-family: 'Teko', sans-serif !important; }
+h1.post { font-size: 28px; }
+h2.post { font-size: 48px; }
 
 /****** Footer ******/
 footer ul { padding: 25px 0 35px; margin-left: 0; }
@@ -106,7 +111,7 @@ footer ul li.selected a { color: black !important; font-weight: bold; }
 
 /***** Form ******/
 div.clear { clear:both; }
-.button { background-color: #FF630C; cursor: pointer; color: #fff; border: none; font-size: 16px; font-weight: bold; padding: 0px 17px 0; line-height: 34px; height: 33px; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box; }
+.button { background-color: #6496C8; box-shadow: 0 3px #27496d; cursor: pointer; color: #fff; border: none; font-size: 16px; font-weight: bold; padding: 5px 17px 0; line-height: 34px; height: 33px; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; -moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box; }
 input:focus { outline: none; }
 ul.form { display: block; margin: 0px; width: 100%; font-size: 16px; list-style: none; }
 ul.form li { display: block; padding-bottom: 15px; }
@@ -115,7 +120,7 @@ ul.form li input[type="text"], ul.form li input[type="password"] { display: bloc
 ul.form li strong { line-height: 36px; }
 
 /***** Fonts ******/
-body { font-family: "Lucida Sans Unicode", "Lucida Grande", Garuda, sans-serif; }
+body { font-family: "Lucida Sans Unicode", "Lucida Grande", Garuda, sans-serif;}
 h1 { font-family: 'CartoGothicStdBook'; font-size: 36px; }
 h2 { font-family: 'CartoGothicStdBold'; font-size: 24px; }
 .menu_top li a { font-family: 'CartoGothicStdBook'; font-size: 14px; }
@@ -163,7 +168,7 @@ ul.url_pattern li { list-style: disc; padding: 10px 0px; }
 	ul.menu_top li { display: block; float: none; background: #EEF2F5; width: 100%; padding: 10px 0px; border-bottom: 1px solid #D6D6D6; }
 	ul.menu_top li a { display: block; }
 	/****** Content ******/
-	#wrapper { margin: 0px auto; }
+	#wrapper { margin: 0px auto;}
 	#body { padding: 30px 15px; }
 	nav#sidebar { display: none; }
 	div#content { width: 100%; }

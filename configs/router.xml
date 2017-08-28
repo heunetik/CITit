@@ -16,7 +16,7 @@
  	<routes>
  		<!-- default controllers for modules -->
 		<controller>
-			<frontend>Page</frontend>
+			<frontend>Article</frontend>
 			<admin>System</admin>
 			<rss>Sample</rss>
 			<mobile>Page</mobile>
@@ -25,6 +25,7 @@
 			<!-- default action for controllers ... -->
 			<frontend>
 				<Page>home</Page>
+				<Article>show_articles</Article>
 				<User>login</User>
 			</frontend>
 			<admin>

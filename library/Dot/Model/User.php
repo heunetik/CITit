@@ -82,6 +82,8 @@ class Dot_Model_User extends Dot_Model
 		// if you want to add an inactive user, un-comment the below line, default: isActive = 1
 		// $data['isActive'] = 0;
 		$data['password'] = $this->passwordApi->hashPassword($data['password'], PASSWORD_DEFAULT);
+		$data['firstName'] = Dot_Filter_UserInput::sanitizeString($data['firstName']);
+		$data['lastName'] = Dot_Filter_UserInput::sanitizeString($data['lastName']);
 		$this->db->insert('user',$data);
 	}
 }

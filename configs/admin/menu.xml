@@ -89,7 +89,7 @@
 		</item>
 		<item>
 			<title>Article</title>
-			<link>article/</link>
+			<link>article/show_articles</link>
 			<description>Article Listing</description>
 			<subItems>
 				<!-- <subItem>
@@ -104,7 +104,7 @@
 				</subItem>
 				<subItem>
 					<title>List</title>
-					<link>article/list/</link>
+					<link>article/show_articles/</link>
 					<description>List article</description>
 				</subItem>
 			</subItems>
