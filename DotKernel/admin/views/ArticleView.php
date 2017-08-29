@@ -280,5 +280,74 @@ class Article_View extends View
             $this->tpl->setVar(strtoupper('REPLY_' . $key), $value);
         }
     }
+
+    public function showLike($template= ' ',$data)
+    {
+        if($template != '')
+        {
+            $this->template = $template;
+        }
+        //Zend_Debug::dump($data, $label=null, $echo=true);exit();
+        $this->tpl->setFile('tpl_main', 'article/' . $template . '.tpl');
+        $this->tpl->setBlock('tpl_main','like_list','like_list_block');
+
+
+            foreach ($data as $key => $value)
+            {
+            // Zend_Debug::dump($key);
+                foreach ($value as $k => $v)
+                {
+                   // Zend_Debug::dump($k);
+                   if($k == 'username')
+                   {    
+                       // Zend_Debug::dump("KEY => " . $k . "  " . " VALUE => " . $v);
+                        $this->tpl->setVar(strtoupper("LIKE_" . $k), $v);
+                   }
+                   if($k == 'articleId')
+                   {
+                        //var_dump($k . " " . $v);
+                        $this->tpl->setVar(strtoupper($k), $v);
+                   } 
+                }
+
+            $this->tpl->parse('like_list_block','like_list',true);
+            //$this->tpl->setVar(strtoupper('COMMENTRATING_' . $key), $value);
+            }
+    }
+
+    public function showDislike($template= ' ',$data)
+    {
+        if($template != '')
+        {
+            $this->template = $template;
+        }
+        //Zend_Debug::dump($data, $label=null, $echo=true);exit();
+        $this->tpl->setFile('tpl_main', 'article/' . $template . '.tpl');
+        $this->tpl->setBlock('tpl_main','dislike_list','dislike_list_block');
+
+
+            foreach ($data as $key => $value)
+            {
+            // Zend_Debug::dump($key);
+                foreach ($value as $k => $v)
+                {
+                   // Zend_Debug::dump($k);
+                   if($k == 'username')
+                   {    
+                       // Zend_Debug::dump("KEY => " . $k . "  " . " VALUE => " . $v);
+                        $this->tpl->setVar(strtoupper("DISLIKE_" . $k), $v);
+                   }
+                   if($k == 'articleId')
+                   {
+                        //var_dump($k . " " . $v);
+                        $this->tpl->setVar(strtoupper($k), $v);
+                   } 
+                }
+
+            $this->tpl->parse('dislike_list_block','dislike_list',true);
+            //$this->tpl->setVar(strtoupper('COMMENTRATING_' . $key), $value);
+            }
+    }
+    
     
 }

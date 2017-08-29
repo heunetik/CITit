@@ -240,6 +240,7 @@ class Article extends Dot_Model_User
 		}
     }
     
+    // delete comment
     public function deleteComment($id)
     {
         try
@@ -252,7 +253,7 @@ class Article extends Dot_Model_User
             return false;
         }
     }
-    
+    // delete reply
     public function deleteReply($id)
     {
         try
@@ -283,4 +284,19 @@ class Article extends Dot_Model_User
     {
         $update=$this->db->update('article',$data,'id='.$id);
     }
+
+    public function likeOrDislike ($id, $rating)
+    {
+    	$select = $this->db->select()
+    			->from ('commentRating')
+    			->joinLeft('user','user.id = commentRating.userId','username')
+    			->where('postId=0')
+    			->where('articleId=?',$id)
+    			->where('rating = ?',$rating);
+    	$result=$this->db->fetchAll($select);
+    	// Zend_Debug::dump($result, $label=null, $echo=true);exit();
+    	return $result;
+
+    }
+
 }
