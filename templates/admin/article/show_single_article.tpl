@@ -8,6 +8,7 @@
    			 <th><span>Content</span></th>
    			 <th><span>Date</span></th>
    			 <th width="230px">Action</th>
+             <th>Like/Dislike</th>
    		</tr>
    	 </thead>
    	 <tbody>
@@ -24,6 +25,14 @@
     				</tr>
 				</table>
 			</td>
+            <td>
+                <table  class="like_dislike_table">
+                    <tr>
+                        <td width="50%"><a href="{SITE_URL}/admin/article/like/id/{ARTICLE_ID}" title="Like" class="like">Like </a></td>
+                        <td width="50%"><a href="{SITE_URL}/admin/article/dislike/id/{ARTICLE_ID}" title="Dislike" class="dislike">Dislike </a></td>
+                    </tr>
+                </table>
+            </td>
 
    		 </tr>
 		<!-- END article_list -->

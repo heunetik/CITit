@@ -318,4 +318,18 @@ switch ($registry->requestAction)
         $articleView->showEditCommentPage('edit_reply', $reply);
 
         break;
+
+    case 'like' :
+        $artId = (isset($registry->request['id'])) ? $registry->request['id'] : '';
+        // Zend_Debug::dump($artId, $label=null, $echo=true);exit();
+        $like = $articleModel->likeOrDislike($artId,'1');
+        // Zend_Debug::dump($like, $label=null, $echo=true);exit();
+        $articleView->showLike('like',$like);
+    break;
+
+    case 'dislike':
+        $artId = (isset($registry->request['id'])) ? $registry->request['id'] : '';
+        $dislike = $articleModel->likeOrDislike($artId,'-1');
+        $articleView->showDislike('dislike',$dislike);
+    break;
 }
