@@ -12,9 +12,9 @@
 /**
  * User Model
  * Here are all the actions related to the user
- * @category   DotKernel
- * @package    Frontend
- * @author     DotKernel Team <team@dotkernel.com>
+ * @category   Apidemia Internship 2017
+ * @package    CITit
+ * @author     Szabo Akos <szabo.aks@gmail.com>
  */
 
 class Article extends Dot_Model_User
@@ -37,12 +37,8 @@ class Article extends Dot_Model_User
 		$this->_httpReferer = (!is_null($httpReferer)) ? $httpReferer : '';
 	}
 
-	/**
-	 * Get user info
-	 * @access public
-	 * @param int $id
-	 * @return array
-	 */
+	// Gets all article data, also gets the LIKE DATA if the user is logged in.
+	// The startFrom variable is only a counter for the infinity scroll
 	public function getAllArticleData($userId = '', $startFrom = 0)
 	{
 		$select = $this->db->select()
@@ -54,6 +50,8 @@ class Article extends Dot_Model_User
 
 			foreach($queriedList as $key => $inner) {
 				$aux = $this->returnLikedArticlesByUserId($userId,$inner['id']);
+				// if the logged user liked an article,
+				// the like data will be appended to the article data
 				if(isset($aux[$inner['id']])) {
 					$inner['articleRating'] = $aux[$inner['id']];
 				} else {
@@ -61,17 +59,22 @@ class Article extends Dot_Model_User
 				}
 				$inner['likeCount'] = $this->countLikesDislikes(0,$inner['id']);
 				$inner['commentCount'] = $this->getCommentCount((int)$inner['id']);
+				// we save the newly concatenated data in a new array to return
 				$finished[$key] = $inner;
 			}
 		} else {
+			// if the user is not logged in, just return the data from the DB without
+			// adding anything
 			foreach($queriedList as $key => $inner) {
 				$inner['commentCount'] = $this->getCommentCount((int)$inner['id']);
+				// we put all of the data in the finished array, but we don't change anything
 				$finished[$key] = $inner;
 			}
 		}
 		return $finished;
 	}
 
+	// gets all the data from an article by it's ID
 	public function getSingleArticleData($id)
 	{
 		$select = $this->db->select()
@@ -79,6 +82,10 @@ class Article extends Dot_Model_User
 						->where('id = ?', $id);
 		return $this->db->fetchRow($select);
 	}
+
+	// Separates comments from replies
+	// Adds replies to it's parent with an array
+	// concatenated to the comment data
 	public function getCommentByArticleId($id)
 	{
 		$completedData = [];
@@ -99,7 +106,6 @@ class Article extends Dot_Model_User
 		return $completedData;
 	}
 
-
 	/**
 	* get comments that have parent id 0
 	*/
@@ -115,6 +121,7 @@ class Article extends Dot_Model_User
 	    return $result;
 	}
 
+	// Returns the comment ammount on the article with the $id
 	public function getCommentCount($id)
 	{
 		$defaultParentId = 0;
@@ -125,6 +132,7 @@ class Article extends Dot_Model_User
 	    
 	    return $result;
 	}
+
 	/**
 	* get comment reply by comment id
 	*/
@@ -136,6 +144,7 @@ class Article extends Dot_Model_User
 	                    ->join('user','user.id = comment.userId','username');
 	    $result = $this->db->fetchAll($select);
 	    $finished = [];
+	    // we append the like count to every reply
 		foreach($result as $key => $inner) {
 			$inner['likeCount'] = $this->countLikesDislikes((int)$inner['id']);
 			$finished[$key] = $inner;
@@ -143,6 +152,9 @@ class Article extends Dot_Model_User
 	    return $finished;
 	}
 
+	// we "delete" the comment by replacing the content with
+	// [deleted] and we change the userId to one created by us
+	// with the 0 id, named [deleted]
 	public function deleteCommentById($id)
     {
         $data = [
@@ -152,6 +164,9 @@ class Article extends Dot_Model_User
         $this->db->update('comment', $data, 'id = ' . $id);
     }
 
+    // We check if the logged in user is the
+    // author of any comments
+    // (used for editing/deleting by the user)
     public function checkCommentPosterByCommentId($id)
     {
     	$select = $this->db->select()
@@ -163,6 +178,7 @@ class Article extends Dot_Model_User
 		return $result['userId'];
     }
 
+    // we update the edited comment data in the database
     public function commentDatabaseWork($data, $id)
     {
     	$data = htmlentities($data);
@@ -172,6 +188,7 @@ class Article extends Dot_Model_User
         }
     }
 
+    // we return the user's username by it's userId
     public function userIdToUsername($id)
     {
     	$select = $this->db->select()
@@ -180,6 +197,10 @@ class Article extends Dot_Model_User
 	    return $this->db->fetchOne($select);
     }
 
+    // The function returns the last comment/reply posted
+    // by the user with the userId $id
+    // This is used for editing newly posted comments/replies,
+    // to avoid editing other users' comments/repliess
     public function returnLastCommentIdOfUserByUserId($id)
     {
     	$select = $this->db->select()
@@ -188,16 +209,26 @@ class Article extends Dot_Model_User
 	    return $this->db->fetchOne($select);
     }
 
+    // Adds a newly posted comment to the database
     public function addCommentToDatabase($data)
     {
     	$this->db->insert('comment', $data);
     }
 
+    // Adds a newly posted article to the database
     public function addNewPostToDatabase($data)
     {
     	$this->db->insert('article', $data);
     }
 
+    // if commentId is zero and the articleId is set,
+    // that means that we count the likes on an article
+    //
+    // if the commentId and the articleId are both set
+    // means that we are counting the likes on a comment/reply
+    //
+    // we count the likes and the dislikes, and we return the
+    // difference between the two
     public function countLikesDislikes($commentId, $articleId = '')
     {
     	if($commentId == 0 && $articleId != '') {
@@ -233,6 +264,7 @@ class Article extends Dot_Model_User
 		}
     }
 
+    // returns all the comments liked by the user on the article
     public function returnCommentsLikedByUserOnArticle($userId, $articleId)
     {
     	$select = $this->db->select()
@@ -249,6 +281,7 @@ class Article extends Dot_Model_User
 	    return $done;
     }
 
+    // returns all the articles liked by the user on the article
     public function returnLikedArticlesByUserId($userId, $articleId)
     {
     	$select = $this->db->select()
@@ -267,6 +300,23 @@ class Article extends Dot_Model_User
 	    return $done;
     }
 
+    // $action - like/dislike
+    // $id - The ID of the comment/reply/article
+    // $state - Was it liked/disliked before
+    // $user - The userId of the user which made the action
+    // $articleId - The article which got liked || on which a comment/reply got liked
+    //
+    // We check if the user already liked/disliked the post (post = article/comment/reply)
+    // if the select returns a value, that means we already have an action on the post
+    // by the user, so we only need to update it
+    //
+    // Next, we check the state of the action.
+    // If the post already has a like/dislike, unliking/undisliking will reset it's rating to 0
+    // (As seen by at # PART1 #)
+    // If the post has no like/dislike yet, or the action is the opposite of the current state
+    // (ex: the post is liked, and it gets a dislike), that means we update straight to -1, skipping
+    // the part where we set the rating to 0
+    // (As seen by at # PART2 #)
     public function handleLikeDislikeRequests($action, $id, $state, $user, $articleId)
     {
     	$select = $this->db->select()
@@ -277,6 +327,7 @@ class Article extends Dot_Model_User
 		$exists = $this->db->fetchOne($select);
 		if($exists != false) {
 	    	if($state == 1) {
+	    		//# PART1 #
 	    		switch($action) {
 			        case 'like':
 			        	$dataVar = [
@@ -292,6 +343,7 @@ class Article extends Dot_Model_User
 			            break;
 			    }
 	    	} else if ($state == 0) {
+	    		//# PART2 #
 	    		switch($action) {
 			        case 'like':
 			        	$dataVar = [
