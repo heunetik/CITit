@@ -37,20 +37,35 @@ class Article_View extends View
     on the specified template.
     (handled as a "$separateArticle", and parsed as one)
     */
-	public function showArticles($template = '', $data)
+	public function showArticles($template = '', $data,$views)
     {
         if($template != '') {
             $this->template = $template;
         }
+
+
+        //Zend_Debug::dump($views);
+        //exit();
         $this->tpl->setFile('tpl_main','article/' . $this->template . ".tpl");
         $this->tpl->setBlock('tpl_main','article_list','article_list_block');
+        // $this->tpl->setBlock('tpl_main','view_list','view_list_block');
         $this->tpl->setBlock('article_list','article_like_controls','article_like_controls_block');
+        // $this->tpl->setBlock('article_like_controls','view_list','view_list_block');
         if(isset($this->session->user->id)) {
             $this->tpl->parse('article_like_controls_block','article_like_controls',true);
         } else {
             $this->tpl->parse('article_like_controls_block','',true);
         }
         foreach ($data as $separateArticle) {
+
+              //foreach ($views as $key => $value)
+                //Zend_Debug::dump("KEY =>" . $key . " " . " VALUE =>  " . $value);
+               
+            // foreach ($views as $key => $value)
+            // {
+            //      $this->tpl->setVar('VIEW',); 
+            // }
+
             if(isset($separateArticle['articleRating'])) {
                 if($separateArticle['articleRating'] != 0) {
                     if($separateArticle['articleRating'] > 0) {
@@ -82,14 +97,26 @@ class Article_View extends View
                 }
                 $this->tpl->setVar('SET_BY_TYPE', $pref . $separateArticle['content']);
             }
+
             foreach($separateArticle as $key => $value) {
+
+                // $this->tpl->setVar('VIEW',$value); 
                 $this->tpl->setVar('ARTICLE_'.strtoupper($key), strtoupper($value));
             }
             $this->tpl->parse('article_list_block','article_list',true);
-        }
+            
+        
+
+        //     foreach ($views as $key => $value)
+        //         {
+                    
+        //             $this->tpl->setVar('ARTICLE_' . $key, $value); 
+        //         }
+        // }
+        // $this->tpl->parse('view_list_block','view_list',true);
         $this->tpl->setVar('POST_COUNT', count($data));
     }
-    
+    }
     public function useTemplate($template = '')
     {
         if($template != '') {

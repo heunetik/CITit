@@ -25,13 +25,17 @@ switch ($registry->requestAction)
 	default:
 	case 'show_articles':
 
+		$views = $articleModel->getViews();
 		if(isset($session->user->id) && !empty($session->user->id)) {
 			$articleData = $articleModel->getAllArticleData($session->user->id, 0);
+			//echo"<pre/>";var_dump($articleData);exit;
+
 		} else {
 			$articleData = $articleModel->getAllArticleData('', 0);
 		}
-		$articleView->showArticles('show_articles', $articleData);
 
+		$articleView->showArticles('show_articles', $articleData,$views);
+	
 		if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			if(isset($_POST['action'])) {
@@ -75,6 +79,14 @@ switch ($registry->requestAction)
 		break;
 
 	case 'show_article_content':
+		$id = $registry->request['id'];
+		if(isset($session->user->id))
+		{
+			$userId = $session->user->id;
+			$articleModel->registerView($id);
+
+		}
+	
 		$articleData = $articleModel->getSingleArticleData($registry->request['id']);
 		$articleCommentAndReply = $articleModel->getCommentByArticleId($registry->request['id']);
 
