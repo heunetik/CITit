@@ -28,6 +28,7 @@ span.post {
 </script>
 <div id="appendToThis">
     <!-- BEGIN article_list -->
+    <!-- <p>TEST</p> -->
     <div class="singlePost" style="display:inline-block; width: 100%; margin: 2px 0px;">
         <!-- <p><strong>{ARTICLE_ID}</strong></p> -->
         <a href="{SET_BY_TYPE}" style="font-size: 16px;"><strong>{ARTICLE_TITLE}</strong></a>
@@ -36,6 +37,7 @@ span.post {
             <img src='{SITE_URL}/images/frontend/up.png' style='{ARTICLE_LIKE_STYLE_UP}' value='like' on='{ARTICLE_LIKE_ON_UP}' id="like{ARTICLE_ID}" class='likeDislikeArt'>
             <span>{ARTICLE_LIKECOUNT}</span>
             <img src='{SITE_URL}/images/frontend/down.png' style='{ARTICLE_LIKE_STYLE_DOWN}' value='dislike' on='{ARTICLE_LIKE_ON_DOWN}' id="dislike{ARTICLE_ID}" class='likeDislikeArt'>
+                <p> View by:{ARTICLE_VIEW}</p>
         </div>
         <br>
         <!-- END article_like_controls -->

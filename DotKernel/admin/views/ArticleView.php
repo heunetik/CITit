@@ -71,12 +71,11 @@ class Article_View extends View
         $this->tpl->setBlock('comment_display','comment_reply','comment_reply_block');
         $this->tpl->setBlock('comment_display','comment_controls','comment_controls_block');
         $this->tpl->setBlock('comment_reply','reply_controls','reply_controls_block');
-        
-        foreach($data as $key => $value) {
-          
-            $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
-        }
-        
+        if(isset($data) && !empty($data)) {
+            foreach($data as $key => $value) {
+                $this->tpl->setVar('ARTICLE_'.strtoupper($key), $value);
+            }
+        }        
 //         Zend_Debug::dump($commentData, $label=null, $echo=true);
         
         foreach ($commentData as $commentKey => $comment) {
@@ -281,22 +280,24 @@ class Article_View extends View
         }
     }
 
-    public function showLike($template= ' ',$data)
+    public function showLike($template= ' ',$data,$id)
     {
         if($template != '')
         {
             $this->template = $template;
         }
+            $this->tpl->setVar('ARTICLEID', $id);
         //Zend_Debug::dump($data, $label=null, $echo=true);exit();
         $this->tpl->setFile('tpl_main', 'article/' . $template . '.tpl');
         $this->tpl->setBlock('tpl_main','like_list','like_list_block');
-
-
+        //Zend_Debug::dump($data);exit;
             foreach ($data as $key => $value)
-            {
-            // Zend_Debug::dump($key);
+            {   
+                //if()
+             // Zend_Debug::dump($key);
                 foreach ($value as $k => $v)
                 {
+                    // var_dump($k . " " . $v);
                    // Zend_Debug::dump($k);
                    if($k == 'username')
                    {    
@@ -305,22 +306,22 @@ class Article_View extends View
                    }
                    if($k == 'articleId')
                    {
-                        //var_dump($k . " " . $v);
-                        $this->tpl->setVar(strtoupper($k), $v);
+                        // var_dump($k . " " . $v);
+                        $this->tpl->setVar(strtoupper($k), $id);
                    } 
                 }
-
             $this->tpl->parse('like_list_block','like_list',true);
             //$this->tpl->setVar(strtoupper('COMMENTRATING_' . $key), $value);
             }
     }
 
-    public function showDislike($template= ' ',$data)
+    public function showDislike($template= ' ',$data,$id)
     {
         if($template != '')
         {
             $this->template = $template;
         }
+        $this->tpl->setVar('ARTICLEID', $id);
         //Zend_Debug::dump($data, $label=null, $echo=true);exit();
         $this->tpl->setFile('tpl_main', 'article/' . $template . '.tpl');
         $this->tpl->setBlock('tpl_main','dislike_list','dislike_list_block');
@@ -348,6 +349,12 @@ class Article_View extends View
             //$this->tpl->setVar(strtoupper('COMMENTRATING_' . $key), $value);
             }
     }
-    
-    
+    public function orderByView($template='')
+    {
+        if($template!='')
+        {
+            $this->template=$template;
+        }
+    }
+     
 }

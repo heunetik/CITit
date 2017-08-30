@@ -20,6 +20,7 @@
 </style>
 <div>
 <h2>Article dislike`s</h2>
+<p> Article id :{ARTICLEID}</p>
 <!-- BEGIN dislike_list -->
 <p>{DISLIKE_USERNAME}</p>
 <!-- <p>{ARTICLEID}</p> -->

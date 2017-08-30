@@ -18,6 +18,7 @@ switch ($registry->requestAction)
     case 'show_articles':
 
         $articleData = $articleModel->getAllArticleData();
+        //$articleModel-> orderByAscArticle();
         $articleView->showArticles('show_articles', $articleData);
 
         break;
@@ -321,15 +322,16 @@ switch ($registry->requestAction)
 
     case 'like' :
         $artId = (isset($registry->request['id'])) ? $registry->request['id'] : '';
-        // Zend_Debug::dump($artId, $label=null, $echo=true);exit();
+        // Zend_Debug::dump($artId, $label=null, $echo=true);
         $like = $articleModel->likeOrDislike($artId,'1');
-        // Zend_Debug::dump($like, $label=null, $echo=true);exit();
-        $articleView->showLike('like',$like);
+         // Zend_Debug::dump($like, $label=null, $echo=true);exit();
+        $articleView->showLike('like',$like,$artId);
     break;
 
     case 'dislike':
         $artId = (isset($registry->request['id'])) ? $registry->request['id'] : '';
         $dislike = $articleModel->likeOrDislike($artId,'-1');
-        $articleView->showDislike('dislike',$dislike);
+        $articleView->showDislike('dislike',$dislike,$artId);
     break;
+
 }

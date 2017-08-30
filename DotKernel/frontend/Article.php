@@ -43,6 +43,7 @@ class Article extends Dot_Model_User
 	{
 		$select = $this->db->select()
 						->from('article')
+						->order('article.view DESC')
 						->limit(10, $startFrom);
 		$queriedList = $this->db->fetchAll($select);
 		$finished = [];
@@ -405,4 +406,34 @@ class Article extends Dot_Model_User
 	    	}
 	    }
     }
+    // 
+    public function registerView($id)
+	{
+		$data = array('view' => new Zend_Db_Expr('view + 1')); 
+		$where = array('id = ?' => $id);; 
+		$this->db->update('article', $data, $where);
+	}
+
+	
+	//
+	public function getViews()
+	{
+
+		$selectViews = $this->db->select()
+							->from("article");
+
+		$resultViews = $this->db->fetchAll($selectViews);
+
+		foreach ($resultViews as $commentId=>$value) 
+		{
+			foreach ($value as $k => $v) 
+			{
+				if($k == 'view')
+				{
+					$views[] = $v;
+				}
+			}
+		}	
+		return $views;	
+	}
 }

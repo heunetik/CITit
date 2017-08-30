@@ -45,7 +45,8 @@ class Article extends Dot_Model_User
 	public function getAllArticleData($page = 1)
 	{
 		$select = $this->db->select()
-						->from('article');
+						->from('article')
+						->order('article.view DESC');
 		return $this->db->fetchAll($select);
 // 	   $dotPaginator = new Dot_Paginator($select, $page, $this->settings->resultsPerPage);
 // 		return $dotPaginator->getData();
@@ -289,14 +290,27 @@ class Article extends Dot_Model_User
     {
     	$select = $this->db->select()
     			->from ('commentRating')
-    			->joinLeft('user','user.id = commentRating.userId','username')
+    			->joinLeft('user','user.id = commentRating.userId')
     			->where('postId=0')
-    			->where('articleId=?',$id)
-    			->where('rating = ?',$rating);
+    			->where('articleId='.$id)
+    			->where('rating ='.$rating);
     	$result=$this->db->fetchAll($select);
+
     	// Zend_Debug::dump($result, $label=null, $echo=true);exit();
     	return $result;
 
     }
+
+    // public function orderByAscArticle()
+    // {
+        
+    //     $select=$this->db->select()
+    //     		-> from('article')
+    //     		->orderby('article.view ASC');
+    //     $result=$this->db->fetchAll($select);
+    //     // Zend_Debug::dump($result);exit;
+    //     return $select;
+
+    // }
 
 }
